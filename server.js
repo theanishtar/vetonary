@@ -5,22 +5,23 @@ const bodyParser = require('body-parser');
 const http = require('http'); // Import module http
 const dbConfig = require("./app/config/db.config");
 const fileparser = require('./app/utils/fileparser');
-
-const app = express();
-
-const server = http.createServer(app); // Tạo server từ express app
-
+// const redis = require("redis"); // Import module redis
+const Redis = require("ioredis");
 const db = require("./app/models");
 const { mongoose } = require("./app/models");
 var dotent = require('dotenv');
-dotent.config();
 
+const app = express();
+const server = http.createServer(app); // Tạo server từ express app
+
+// Connect to Redis
+// const redisClient = redis.createClient(process.env.REDIS_URI);
+
+dotent.config();
 app.use(cors());
 app.use(bodyParser.json());
-
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-
 app.use(
   cookieSession({
     name: "davis-app-session",
@@ -28,6 +29,17 @@ app.use(
     httpOnly: true
   })
 );
+
+// Khởi tạo một đối tượng Redis
+const redis = new Redis(process.env.REDIS_URI);
+// Kiểm tra trạng thái kết nối
+redis.on("connect", function () {
+  console.log("Connected to Redis successfully!");
+});
+// Xử lý lỗi kết nối
+redis.on("error", function (error) {
+  console.error("Redis connection error:", error);
+});
 
 
 db.mongoose
@@ -43,11 +55,8 @@ db.mongoose
     process.exit();
   });
 
-
-
 // routes
 require("./app/routes/badword.route")(app);
-
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5152;
