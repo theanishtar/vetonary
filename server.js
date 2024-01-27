@@ -13,6 +13,8 @@ var dotent = require('dotenv');
 
 const app = express();
 const server = http.createServer(app); // Tạo server từ express app
+const redisURI = process.env.REDIS_URI;
+const mongodbURI = process.env.MONGODB_URI;
 
 // Connect to Redis
 // const redisClient = redis.createClient(process.env.REDIS_URI);
@@ -31,7 +33,7 @@ app.use(
 );
 
 // Khởi tạo một đối tượng Redis
-const redis = new Redis(process.env.REDIS_URI);
+const redis = new Redis(redisURI);
 // Kiểm tra trạng thái kết nối
 redis.on("connect", function () {
   console.log("Connected to Redis successfully!");
@@ -43,12 +45,12 @@ redis.on("error", function (error) {
 
 
 db.mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(mongodbURII, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then(() => {
-    console.log("Successfully connect to MongoDB." + process.env.MONGODB_URI);
+    console.log("Successfully connect to MongoDB." + mongodbURI);
   })
   .catch(err => {
     console.error("Connection error", err);
