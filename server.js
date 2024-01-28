@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const http = require('http'); // Import module http
 const dbConfig = require("./app/config/db.config");
 const fileparser = require('./app/utils/fileparser');
-// const redis = require("redis"); // Import module redis
 const Redis = require("ioredis");
 const db = require("./app/models");
 const { mongoose } = require("./app/models");
@@ -15,9 +14,6 @@ const app = express();
 const server = http.createServer(app); // Tạo server từ express app
 const redisURI = process.env.REDIS_URI;
 const mongodbURI = process.env.MONGODB_URI;
-
-// Connect to Redis
-// const redisClient = redis.createClient(process.env.REDIS_URI);
 
 dotent.config();
 app.use(cors());
