@@ -3,8 +3,6 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const bodyParser = require('body-parser');
 const http = require('http'); // Import module http
-const dbConfig = require("./app/config/db.config");
-const fileparser = require('./app/utils/fileparser');
 const Redis = require("ioredis");
 const db = require("./app/models");
 const { mongoose } = require("./app/models");
@@ -14,6 +12,7 @@ const app = express();
 const server = http.createServer(app); // Tạo server từ express app
 const redisURI = process.env.REDIS_URI;
 const mongodbURI = process.env.MONGODB_URI;
+const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 
 dotent.config();
 app.use(cors());
@@ -28,8 +27,6 @@ app.use(
   })
 );
 
-// Khởi tạo một đối tượng Redis
-const redis = new Redis(redisURI);
 // Kiểm tra trạng thái kết nối
 redis.on("connect", function () {
   console.log("Connected to Redis successfully!");
