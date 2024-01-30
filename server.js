@@ -10,9 +10,6 @@ var dotent = require('dotenv');
 
 const app = express();
 const server = http.createServer(app); // Tạo server từ express app
-const redisURI = process.env.REDIS_URI;
-const mongodbURI = process.env.MONGODB_URI;
-const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 
 dotent.config();
 app.use(cors());
@@ -27,6 +24,10 @@ app.use(
   })
 );
 
+const redisURI = process.env.REDIS_URI;
+const mongodbURI = process.env.MONGODB_URI;
+
+const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 // Kiểm tra trạng thái kết nối
 redis.on("connect", function () {
   console.log("Connected to Redis successfully!");
@@ -36,9 +37,8 @@ redis.on("error", function (error) {
   console.error("Redis connection error:", error);
 });
 
-
 db.mongoose
-  .connect(mongodbURII, {
+  .connect(mongodbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -51,7 +51,7 @@ db.mongoose
   });
 
 // routes
-require("./app/routes/badword.route")(app);
+require("./app/routes/badword.route")(app, redis);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5152;

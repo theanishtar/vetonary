@@ -1,7 +1,7 @@
-
+const cache = require("../controllers/redis.controller");
 const controller = require("../controllers/badword.controller");
 
-module.exports = function (app, io) {
+module.exports = function (app, redis) {
   app.use(function (req, res, next) {
 
     res.header(
@@ -11,5 +11,6 @@ module.exports = function (app, io) {
     next();
   });
 
-  app.get('/api/badwords', controller.getAllBadwords);
+  app.get('/api/badwords', (req, res) => controller.getAllBadwords(req, res, redis));
+  app.get('/api/badword', (req, res) => controller.getBadwordByName(req, res, redis));
 };
