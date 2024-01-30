@@ -1,28 +1,5 @@
 const Badword = require("../models/badword.model");
 
-// Hàm để lấy dữ liệu từ cache hoặc từ cơ sở dữ liệu nếu không có trong cache
-const getBadwordsFromCache = async (redis, name) => {
-  try {
-    // Kiểm tra xem dữ liệu có trong cache không
-    const cachedBadwords = await redis.get(name);
-    console.log(`Data: ${cachedBadwords}`)
-    return JSON.parse(cachedBadwords);
-    if (cachedBadwords) {
-      // Nếu có, chuyển đổi dữ liệu từ chuỗi JSON sang đối tượng JavaScript và trả về
-      return JSON.parse(cachedBadwords);
-    } else {
-      // Nếu không có trong cache, truy vấn cơ sở dữ liệu MongoDB
-      const badwordsFromDB = await Badword.find({});
-      // Lưu dữ liệu vào cache với thời gian sống là 1 giờ
-      await redis.set('badwords', JSON.stringify(badwordsFromDB), 'EX', 3600);
-      return badwordsFromDB;
-    }
-  } catch (error) {
-    console.error('Error retrieving badwords:', error);
-    throw error;
-  }
-};
-
 exports.getAllBadwords = async (req, res, redis) => {
   try {
     const badwords = await Badword.find();
@@ -37,13 +14,53 @@ exports.getBadwordByName = async (req, res, redis) => {
   try {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(name);
-    console.log("Func: " + findCache)
     if (findCache)
       return res.json(JSON.parse(findCache))
 
     console.log("Khong co trong cache")
     const badwords = await Badword.find({ name });
-    return res.json(badwords);
+    console.log(badwords.length)
+    if (badwords.length == 0)
+      return res.status(404).json({ data: "", message: "Word not found" });
+
+    return res.status(200).json({ data: badwords, message: "This is VN badword" });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+
+/*
+  body: {
+    words: "text"
+  }
+*/
+exports.checkBadword = async (req, res, redis) => {
+  const line = req.body.words;
+  try {
+    // Kiểm tra xem dữ liệu có trong cache không
+    const findCache = await redis.get(line);
+    if (findCache)
+      return res.json(JSON.parse(findCache))
+
+    const word = line.split(" ");
+    const promises = word.map(async (name) => {
+      const bad = await redis.get(name);
+      return { name, bad };
+    });
+    const results = await Promise.all(promises);
+    let hasBadword; // Cờ để kiểm tra xem có badword không
+
+    results.forEach(e => {
+      if (e.bad != null) {
+        hasBadword = JSON.parse(e.bad);
+      }
+    });
+
+    // Nếu không có badword nào trong results, trả về phản hồi 'Word not found'
+    if (!hasBadword) {
+      res.status(404).json({ data: "", message: "Word not found" });
+    }
+    return res.status(404).json({ data: hasBadword, message: "Word not found" });
   } catch (error) {
     return res.status(500).json({ error: "Error" });
   }
