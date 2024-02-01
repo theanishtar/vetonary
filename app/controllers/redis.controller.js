@@ -20,6 +20,29 @@ redis.keys("*", function (err, keys) {
 });
 */
 
+exports.findKey = async (req, res, redis) => {
+  // Tạo một Stream sử dụng scanStream()
+  const stream = redis.scanStream();
+  console.log(stream)
+  // Xử lý sự kiện 'data' để nhận kết quả từ Redis
+  stream.on('data', function (resultKeys) {
+    // resultKeys là một mảng chứa các key
+    resultKeys.forEach(function (key) {
+      console.log('Key:', key);
+    });
+  });
+
+  // Xử lý sự kiện 'end' để thông báo khi việc duyệt qua tất cả các key đã hoàn thành
+  stream.on('end', function () {
+    console.log('Scan completed');
+
+    // Đóng kết nối sau khi hoàn thành
+    redis.quit();
+  });
+
+  res.json(3)
+};
+
 exports.getAllCache = async (req, res, redis) => {
   try {
     redis.keys("*", function (err, keys) {
@@ -39,7 +62,7 @@ exports.getAllCache = async (req, res, redis) => {
         });
       });
     });
-    res.json(badwords);
+    res.json("badwords");
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error" });
