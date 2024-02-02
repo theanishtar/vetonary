@@ -1,68 +1,42 @@
-/*
-
-// Lấy tất cả các key từ Redis
-redis.keys("*", function (err, keys) {
-    if (err) {
-        console.error("Error retrieving keys:", err);
-        return;
-    }
-
-    // Lặp qua từng key và lấy giá trị của nó
-    keys.forEach(function (key) {
-        redis.get(key, function (err, value) {
-            if (err) {
-                console.error("Error retrieving value for key", key, ":", err);
-                return;
-            }
-            console.log("Key:", key, "Value:", value);
-        });
-    });
-});
-*/
-
-exports.findKey = async (req, res, redis) => {
-  // Tạo một Stream sử dụng scanStream()
-  const stream = redis.scanStream();
-  console.log(stream)
-  // Xử lý sự kiện 'data' để nhận kết quả từ Redis
-  stream.on('data', function (resultKeys) {
-    // resultKeys là một mảng chứa các key
-    resultKeys.forEach(function (key) {
-      console.log('Key:', key);
-    });
-  });
-
-  // Xử lý sự kiện 'end' để thông báo khi việc duyệt qua tất cả các key đã hoàn thành
-  stream.on('end', function () {
-    console.log('Scan completed');
-
-    // Đóng kết nối sau khi hoàn thành
-    redis.quit();
-  });
-
-  res.json(3)
+exports.addData = async (req, res, redis) => {
+  data.forEach(e => {
+    let bdw = { name: e.name, label: e.label, severityLevel: e.severityLevel, createDate: e.createDate }
+    redis.set(e.name, JSON.stringify(bdw))
+      .then(() => {
+        console.log('Dữ liệu đã được thêm vào Redis thành công.', bdw);
+      })
+      .catch((error) => {
+        console.error('Đã xảy ra lỗi khi thêm dữ liệu vào Redis:', error);
+      })
+      .finally(() => {
+        // Đóng kết nối Redis sau khi hoàn tất
+        // redis.quit();
+        // console.log("SUCCESS !!!")
+      });
+  })
 };
 
 exports.getAllCache = async (req, res, redis) => {
   try {
+    let data = [];
     redis.keys("*", function (err, keys) {
       if (err) {
         console.error("Error retrieving keys:", err);
         return { err: err };
       }
-
+      // return res.json(keys);
       // Lặp qua từng key và lấy giá trị của nó
       keys.forEach(function (key) {
         redis.get(key, function (err, value) {
           if (err) {
             console.error("Error retrieving value for key", key, ":", err);
-            return { err: err };
+            return;
           }
           console.log("Key:", key, "Value:", value);
         });
       });
     });
-    res.json("badwords");
+    res.json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error" });

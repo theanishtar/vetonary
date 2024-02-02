@@ -56,17 +56,14 @@ exports.getBadwordByName = async (req, res, redis) => {
 */
 exports.checkBadword = async (req, res, redis) => {
   const line = req.body.words;
-  const name = line;
   let hasBadword; // Cờ để kiểm tra xem có badword không
   console.log(line)
   try {
     // Kiểm tra xem dữ liệu có trong cache không
-    const findCache = await redis.get({ name });
-    console.log(findCache)
+    const findCache = await redis.get(line);
     if (findCache)
-      return res.status(200).json({ data: findCache, message: "This is VN badword" });
+      return res.status(200).json({ data: JSON.parse(findCache), message: "This is VN badword" });
 
-    console.log("CUT STRIng")
     const word = line.split(" ");
     const cache = word.map(async (name) => {
       const bad = await redis.get(name);
@@ -79,32 +76,33 @@ exports.checkBadword = async (req, res, redis) => {
         hasBadword = JSON.parse(e.bad);
       }
     });
-
     if (hasBadword)
       return res.status(200).json({ data: hasBadword, message: "This is VN badword" });
 
-    console.log("Khong co trong cache")
-    const badw = await Badword.find({ line });
-    if (badw)
-      return res.status(200).json({ data: badw, message: "This is VN badword" });
-    const db = word.map(async (name) => {
-      const bad = await redis.get(name);
-      return { name, bad };
+    const name = line;
+    const badw = await Badword.find({ name });
+    console.log(badw.length > 0 && badw)
+    if (badw && badw.length > 0)
+      return res.status(200).json({ data: badw, message: "This is VN badword1" });
+    const db = word.map(async (nameW) => {
+      const bad = await Badword.find({ name: nameW });
+      return { nameW, bad };
     });
     const dbResults = await Promise.all(db);
-
     dbResults.forEach(e => {
-      if (e.bad != null) {
-        hasBadword = JSON.parse(e.bad);
+      if (e.bad.length > 0) {
+        hasBadword = e.bad;
+        return;
       }
     });
 
     // Nếu không có badword nào trong results, trả về phản hồi 'Word not found'
     if (hasBadword) {
-      return res.status(200).json({ data: badw, message: "This is VN badword" });
+      return res.status(200).json({ data: hasBadword, message: "This is VN badword" });
     }
     return res.status(404).json({ data: "", message: "Word not found" });
   } catch (error) {
-    return res.status(500).json({ error: "Error" });
+    console.log(error)
+    return res.status(500).json({ error: "ERR" });
   }
 };
