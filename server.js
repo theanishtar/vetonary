@@ -52,6 +52,7 @@ db.mongoose
 
 // routes
 require("./app/routes/badword.route")(app, redis);
+require("./app/routes/cache.route")(app, redis);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5152;
