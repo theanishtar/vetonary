@@ -12,5 +12,6 @@ module.exports = function (app, redis) {
 
   app.get('/api/caches', (req, res) => cache.getAllCache(req, res, redis));
   app.get('/api/cache', (req, res) => cache.getCacheByKey(req, res, redis));
-  app.delete('/api/cache', (req, res) => cache.deleteByName(req, res, redis));
+  app.delete('/api/cache', (req, res) => cache.deleteByKey(req, res, redis));
+  app.put('/api/cache', (req, res) => cache.updateByKey(req, res, redis));
 };
