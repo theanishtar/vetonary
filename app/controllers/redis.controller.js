@@ -35,7 +35,7 @@ exports.getAllCache = async (req, res, redis) => {
               reject(err);
             } else {
               console.log("Key:", key, "Value:", value);
-              data.push({ key: key, val: (value) });
+              data.push({ key: key, val: JSON.parse(value) });
               resolve();
             }
           });
@@ -58,30 +58,7 @@ exports.getAllCache = async (req, res, redis) => {
   }
 };
 
-exports.deleteByKey = async (req, res, redis) => {
-  const key = req.query.key;
-
-  try {
-    // Xóa một key từ Redis
-    redis.del(key).then((result) => {
-      console.log('Deleted Successfully!', result);
-      if (result > 0)
-        return res.json({ action: `del cache with key is ${key}`, status: "Sucess", data: result });
-      return res.status(404).json({ action: `del cache with key is ${key}`, status: "Not found", data: result });
-
-    }).catch((err) => {
-      console.error('Error:', err);
-      res.json(err)
-    }).finally(() => {
-    });
-  } catch (error) {
-    res.json(err)
-  }
-
-}
-
-exports.updateByKey = async (req, res, redis) => {
-  const key = req.query.key;
+exports.postByKey = async (req, res, redis) => {
 
   /*
   const data = {
@@ -99,17 +76,89 @@ exports.updateByKey = async (req, res, redis) => {
       severityLevel: req.body.severityLevel,
       createDate: req.body.createDate
     }
+    const key = badWord.name;
+    console.log(badWord)
+    // Kiểm tra xem dữ liệu có trong cache không
+    const findCache = await redis.get(key);
+    if (findCache)
+      return res.status(203).json({ data: "", message: "Word repeating" });
+
+    // Thêm giá trị của key trong Redis
+    redis.set(key, JSON.stringify(badWord)).then((result) => {
+      console.log('POST Successfully!', result);
+      if (result === 'OK') {
+        // Trả về phản hồi nếu thêm thành công
+        return res.json({ action: `Post cache with key ${key}`, status: "Success", data: result });
+      } else {
+        // Trả về lỗi nếu không thể cập nhật key
+        return res.status(500).json({ action: `post cache with key ${key}`, status: "Error", data: badWord });
+      }
+    }).catch((err) => {
+      console.error('Error:', err);
+      // Trả về lỗi nếu có lỗi xảy ra trong quá trình cập nhật
+      res.status(500).json(err);
+    }).finally(() => {
+      // Đóng kết nối Redis
+    });
+  } catch (error) {
+    res.json(err)
+  }
+}
+
+exports.deleteByKey = async (req, res, redis) => {
+  const key = req.query.key;
+  try {
+    // Xóa một key từ Redis
+    redis.del(key).then((result) => {
+      console.log('Deleted Successfully!', result);
+      if (result > 0)
+        return res.json({ action: `del cache with key is ${key}`, status: "Sucess", data: result });
+      return res.status(404).json({ action: `del cache with key is ${key}`, status: "Not found", data: result });
+    }).catch((err) => {
+      console.error('Error:', err);
+      res.json(err)
+    }).finally(() => {
+    });
+  } catch (error) {
+    res.json(err)
+  }
+}
+
+exports.updateByKey = async (req, res, redis) => {
+  const key = req.query.key;
+
+  /*
+  const data = {
+    name: "QWERTY",
+    label: 1,
+    severityLevel: 1,
+    createDate: 2020-05-18T14:10:30Z
+  }
+  */
+  try {
+    // Kiểm tra xem dữ liệu có trong cache không
+    const findCache = await redis.get(key);
+    if (!findCache)
+      return res.status(404).json({ data: "", message: "Word not found" });
+
+    // Giá trị mới cần thiết lập cho key
+    const badWord = {
+      name: req.body.name,
+      label: req.body.label,
+      severityLevel: req.body.severityLevel,
+      createDate: req.body.createDate
+    }
     console.log(badWord)
 
     // Cập nhật giá trị của key trong Redis
-    redis.set(key, badWord).then((result) => {
+    redis.set(key, JSON.stringify(badWord)).then((result) => {
       console.log('Updated Successfully!', result);
       if (result === 'OK') {
         // Trả về phản hồi nếu cập nhật thành công
         return res.json({ action: `update cache with key ${key}`, status: "Success", data: result });
       } else {
         // Trả về lỗi nếu không thể cập nhật key
-        return res.status(500).json({ action: `update cache with key ${key}`, status: "Error", data: result });
+        return res.status(500).json({ action: `update cache with key ${key}`, status: "Error", data: badWord });
       }
     }).catch((err) => {
       console.error('Error:', err);
