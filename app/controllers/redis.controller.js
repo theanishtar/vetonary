@@ -1,5 +1,15 @@
+const Badword = require("../models/badword.model");
+
+const dataArr = [
+  {
+    name: 'dangdepzai',
+    label: 1,
+    severityLevel: 1,
+    createDate: '2020-05-18T14:10:30Z'
+  }
+]
 exports.addData = async (req, res, redis) => {
-  data.forEach(e => {
+  dataArr.forEach(e => {
     let bdw = { name: e.name, label: e.label, severityLevel: e.severityLevel, createDate: e.createDate }
     redis.set(e.name, JSON.stringify(bdw))
       .then(() => {
@@ -58,7 +68,7 @@ exports.getAllCache = async (req, res, redis) => {
   }
 };
 
-exports.postByKey = async (req, res, redis) => {
+exports.postCache = async (req, res, redis) => {
 
   /*
   const data = {
@@ -188,3 +198,40 @@ exports.getCacheByKey = async (req, res, redis) => {
     return res.status(500).json({ error: "Error" });
   }
 };
+
+exports.addAllMongoToRedis = async (eq, res, redis) => {
+  const badwords = await Badword.find();
+  let len = 0;
+  badwords.forEach(e => {
+    len++;
+    redis.set(e.name, JSON.stringify(e))
+      .then(() => {
+        console.log('Dữ liệu đã được thêm vào Redis thành công.', e);
+      })
+      .catch((error) => {
+        console.error('Đã xảy ra lỗi khi thêm dữ liệu vào Redis:', error);
+        return res.status(200).json(
+          { action: "Add Mongo to Redis", status: "Failed", message: `Failed when add ${badwords.length} to Cache memory`, success: `${len} Objects` });
+      })
+      .finally(() => {
+      });
+  })
+  return res.status(200).json({ action: "Add Mongo to Redis", status: "success", message: `Add ${badwords.length} to Cache memory`, success: `${len} Objects` });
+};
+
+exports.missingRedis = async (req, res, redis) => {
+  const badwords = await Badword.find();
+  let data = [];
+  let len = 0;
+
+  // Sử dụng Promise.all để xử lý bất đồng bộ
+  await Promise.all(badwords.map(async (e) => {
+    const findCache = await redis.get(e.name);
+    if (!findCache)
+      data.push(e);
+  }));
+
+  // Tiếp tục xử lý dữ liệu sau khi đã lấy được dữ liệu từ Redis
+  console.log(data);
+  return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
+}

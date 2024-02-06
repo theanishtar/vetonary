@@ -83,7 +83,7 @@ exports.checkBadword = async (req, res, redis) => {
     const badw = await Badword.find({ name });
     console.log(badw.length > 0 && badw)
     if (badw && badw.length > 0)
-      return res.status(200).json({ data: badw, message: "This is VN badword1" });
+      return res.status(200).json({ data: badw, message: "This is VN badword" });
     const db = word.map(async (nameW) => {
       const bad = await Badword.find({ name: nameW });
       return { nameW, bad };
