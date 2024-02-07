@@ -51,6 +51,10 @@ db.mongoose
   });
 
 // routes
+
+app.get('/', (req, res) => {
+  res.json("Hello server is live");
+});
 require("./app/routes/badword.route")(app, redis);
 require("./app/routes/cache.route")(app, redis);
 
