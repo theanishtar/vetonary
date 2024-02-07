@@ -188,6 +188,7 @@ exports.getCacheByKey = async (req, res, redis) => {
   try {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(key);
+    console.log(findCache)
     if (findCache)
       return res.status(200).json({ data: JSON.parse(findCache) });
 

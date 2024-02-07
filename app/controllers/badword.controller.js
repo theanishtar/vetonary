@@ -35,7 +35,7 @@ exports.getBadwordByName = async (req, res, redis) => {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(name);
     if (findCache)
-      return res.status(200).json({ data: findCache, message: "This is VN badword" });
+      return res.status(200).json({ data: JSON.parse(findCache), message: "This is VN badword" });
 
     console.log("Khong co trong cache")
     const badwords = await Badword.find({ name });
