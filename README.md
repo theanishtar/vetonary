@@ -4,7 +4,7 @@
 - Check badword:
 
 ```js
-POST: http://localhost:5152/api/checkBadword
+POST: http://localhost:5152/api/badword
 body: {
   {
       "words":"nhamloz z"
