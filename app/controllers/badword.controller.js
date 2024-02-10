@@ -107,3 +107,30 @@ exports.checkBadword = async (req, res, redis) => {
     return res.status(500).json({ error: "ERR" });
   }
 };
+
+function replaceWordWithAsterisks(s, key) {
+    let new_s = '';
+    let words = s.split(' '); // Tách chuỗi thành các từ
+
+    // Duyệt qua từng từ trong chuỗi
+    for (let i = 0; i < words.length; i++) {
+        // Nếu từ trùng khớp với key thì thay thế bằng dấu sao
+        if (words[i] === key) {
+            // Thay thế từ với dấu sao có độ dài bằng với từ khóa
+            new_s += '*'.repeat(key.length);
+        } else {
+            new_s += words[i]; // Giữ nguyên từ không cần thay thế
+        }
+        if (i < words.length - 1) {
+            new_s += ' '; // Thêm khoảng trắng nếu không phải từ cuối cùng
+        }
+    }
+
+    return new_s;
+}
+
+// let s = "hell my friends";
+// let key = "hell";
+
+// let new_s = replaceWordWithAsterisks(s, key);
+// console.log(new_s); // Kết quả: "****o my friends"
