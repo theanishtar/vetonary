@@ -57,13 +57,22 @@ exports.getBadwordByName = async (req, res, redis) => {
 exports.checkBadword = async (req, res, redis) => {
   const line = req.body.words;
   let hasBadword; // Cờ để kiểm tra xem có badword không
-  console.log(line)
+  console.log(line);
+  let badwords = [];
   try {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(line);
     const resCache = JSON.parse(findCache);
-    if (findCache)
-      return res.status(200).json({ data: resCache, label: resCache.label, message: "This is VN badword" });
+    if (findCache) {
+      badwords.push(findCache);
+      return res.status(200).json(
+        {
+          badwords: badwords,
+          label: resCache.label,
+          cleanWord: replaceWordWithAsterisks(line, resCache.name),
+          message: "This is VN badword"
+        });
+    }
 
     const word = line.split(" ");
     const cache = word.map(async (name) => {
@@ -77,14 +86,29 @@ exports.checkBadword = async (req, res, redis) => {
         hasBadword = JSON.parse(e.bad);
       }
     });
-    if (hasBadword)
-      return res.status(200).json({ data: hasBadword, label: hasBadword.label, message: "This is VN badword" });
-
+    if (hasBadword) {
+      badwords.push(hasBadword);
+      return res.status(200).json(
+        {
+          badwords: badwords,
+          label: hasBadword.label,
+          cleanWord: replaceWordWithAsterisks(line, hasBadword.name),
+          message: "This is VN badword"
+        });
+    }
     const name = line;
     const badw = await Badword.find({ name });
     console.log(badw.length > 0 && badw)
-    if (badw && badw.length > 0)
-      return res.status(200).json({ data: badw, label: badw.label, message: "This is VN badword" });
+    if (badw && badw.length > 0) {
+      badwords.push(badw);
+      return res.status(200).json(
+        {
+          badwords: badwords,
+          label: badw.label,
+          cleanWord: replaceWordWithAsterisks(line, badw.name),
+          message: "This is VN badword"
+        });
+    }
     const db = word.map(async (nameW) => {
       const bad = await Badword.find({ name: nameW });
       return { nameW, bad };
@@ -99,7 +123,14 @@ exports.checkBadword = async (req, res, redis) => {
 
     // Nếu không có badword nào trong results, trả về phản hồi 'Word not found'
     if (hasBadword) {
-      return res.status(200).json({ data: hasBadword, label: hasBadword.label, message: "This is VN badword" });
+      badwords.push(hasBadword);
+      return res.status(200).json(
+        {
+          badwords: badwords,
+          label: hasBadword.label,
+          cleanWord: replaceWordWithAsterisks(line, hasBadword.name),
+          message: "This is VN badword"
+        });
     }
     return res.status(404).json({ data: "", label: 0, message: "Word not found" });
   } catch (error) {
@@ -109,24 +140,24 @@ exports.checkBadword = async (req, res, redis) => {
 };
 
 function replaceWordWithAsterisks(s, key) {
-    let new_s = '';
-    let words = s.split(' '); // Tách chuỗi thành các từ
+  let new_s = '';
+  let words = s.split(' '); // Tách chuỗi thành các từ
 
-    // Duyệt qua từng từ trong chuỗi
-    for (let i = 0; i < words.length; i++) {
-        // Nếu từ trùng khớp với key thì thay thế bằng dấu sao
-        if (words[i] === key) {
-            // Thay thế từ với dấu sao có độ dài bằng với từ khóa
-            new_s += '*'.repeat(key.length);
-        } else {
-            new_s += words[i]; // Giữ nguyên từ không cần thay thế
-        }
-        if (i < words.length - 1) {
-            new_s += ' '; // Thêm khoảng trắng nếu không phải từ cuối cùng
-        }
+  // Duyệt qua từng từ trong chuỗi
+  for (let i = 0; i < words.length; i++) {
+    // Nếu từ trùng khớp với key thì thay thế bằng dấu sao
+    if (words[i] === key) {
+      // Thay thế từ với dấu sao có độ dài bằng với từ khóa
+      new_s += '*'.repeat(key.length);
+    } else {
+      new_s += words[i]; // Giữ nguyên từ không cần thay thế
     }
+    if (i < words.length - 1) {
+      new_s += ' '; // Thêm khoảng trắng nếu không phải từ cuối cùng
+    }
+  }
 
-    return new_s;
+  return new_s;
 }
 
 // let s = "hell my friends";

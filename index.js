@@ -61,5 +61,5 @@ require("./app/routes/cache.route")(app, redis);
 // set port, listen for requests
 const PORT = process.env.PORT || 5152;
 server.listen(PORT, () => {  //Thay vì sử dụng app.listen, hãy sử dụng server.listen để sử dụng cùng một cổng cho cả express app và Socket.IO:
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server is running on: http://localhost:${PORT}.`);
 });
