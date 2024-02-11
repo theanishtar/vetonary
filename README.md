@@ -1,6 +1,6 @@
 # Check từ ngữ bậy bạ tiếng Việt
 
-![](./images/cleanwords.png)
+<img src='./images/cleanwords.png' width='60%'></img>
 
 ## Các APIs
 
