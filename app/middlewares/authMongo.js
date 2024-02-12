@@ -6,11 +6,10 @@ const Users = require("../models/users.model");
 verifyToken = async (req, res, next) => {
 
   const tokenBearer = req.header('Authorization');
-  let token = tokenBearer.substring(7);
-
-  if (!token) {
+  if (!tokenBearer)
     return res.status(403).send({ message: "No token provided!" });
-  }
+
+  let token = tokenBearer.substring(7);
 
   const user = await Users.findOne({ token: token });
 
