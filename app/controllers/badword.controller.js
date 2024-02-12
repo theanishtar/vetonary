@@ -2,10 +2,9 @@ const Badword = require("../models/badword.model");
 
 exports.getAllBadwords = async (req, res, redis) => {
   try {
-
     redis.keys("*", function (err, keys) {
       if (err) {
-        console.error("Error retrieving keys:", err);
+        console.error("Error retrieving keys: ", err);
         return;
       }
 
@@ -16,7 +15,7 @@ exports.getAllBadwords = async (req, res, redis) => {
             console.error("Error retrieving value for key", key, ":", err);
             return;
           }
-          console.log("Key:", key, "Value:", value);
+          // console.log("Key:", key, "Value:", value);
         });
       });
     });
