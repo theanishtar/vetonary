@@ -1,5 +1,5 @@
 const Badword = require("../models/badword.model");
-const Users = require("../models/users.model");
+const Users = require("../models/user.model");
 
 exports.getAll = async (req, res, redis) => {
   const user = await Users.find({ token: req.token });

@@ -1,4 +1,3 @@
 module.exports = {
-  secret: "",
-  GOOGLE_CLIENT_ID:""
+  secret: "Theanishtar-badword-detector"
 };
