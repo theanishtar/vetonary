@@ -1,6 +1,6 @@
 # Check từ ngữ bậy bạ tiếng Việt
 
-<img src='./images/cleanwords.png' width='60%'></img>
+<img src='./images/cleanwords.png' width='80%'></img>
 
 ## Các APIs
 
@@ -41,6 +41,12 @@ res: {
   }
 }
 ```
+
+## Bảo mật
+
+Những APIs tương tác với database hoặc CRUD dữ liệu, cần phải truyền token để sử dụng
+
+
 - Check badword:
   - Tốc độ kiểm tra tối ưu hơn
 
