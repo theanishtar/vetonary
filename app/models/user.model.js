@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const usersSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   createDate: {
     type: Date
   },
@@ -22,6 +22,6 @@ const usersSchema = new mongoose.Schema({
 });
 
 
-const Users = mongoose.model('users', usersSchema);
+const User = mongoose.model('users', userSchema);
 
-module.exports = Users;
+module.exports = User;
