@@ -1,16 +1,16 @@
 # Check từ ngữ bậy bạ tiếng Việt
 
-<img src='./images/cleanwords.png' width='80%'></img>
 User sẽ gửi dữ liệu lên Request, ví dụ:
 
-```json
+
 POST: http://localhost:8080/api/cleanwords
-body: {
+```json
+"body": {
   {
-    "words": "con chó loz thúi"
+    "words": "con chó loz !!!"
   }
 }
-res: {
+"response": {
   {
     "badWords": [
         {
@@ -31,11 +31,14 @@ res: {
         }
     ],
     "label": 2,
-    "cleanWord": "con *** ***",
+    "cleanWord": "con *** *** !!!",
     "message": "This is VN badword"
   }
 }
 ```
+
+
+<!--<img src='./images/cleanwords.png' width='80%'></img>-->
 ----
 Dữ liệu có chứa `chó` và `loz` là một từ khiếm nhã, xem tất cả tại [đây](https://github.com/frogsage/vietnam-sensitive-words/blob/main/bad_words.json)
 
