@@ -220,6 +220,91 @@ exports.cleanWords = async (req, res, redis) => {
   }
 };
 
+exports.getCleanWords = async (req, res, redis) => {
+  const line = req.query.word;
+  let hasBadword; // Cờ để kiểm tra xem có badword không
+  let badwords = [];
+  try {
+    // Cả chuỗi đều là badwords
+    const findCache = await redis.get(line);
+    const resCache = JSON.parse(findCache);
+    if (findCache) {
+      badwords.push(resCache);
+      const cleanWords = '*'.repeat(resCache.name.length);
+      return res.status(200).json(
+        {
+          badWords: badwords,
+          label: badwords.length,
+          cleanWord: cleanWords,
+          message: "This is VN badword"
+        });
+    }
+
+    // Tách từng chuỗi con
+    const word = line.split(" ");
+    const cache = word.map(async (name) => {
+      const bad = await redis.get(name);
+      return { name, bad };
+    });
+    const results = await Promise.all(cache);
+
+    results.forEach(e => {
+      if (e.bad != null) {
+        hasBadword = JSON.parse(e.bad);
+        badwords.push(hasBadword);
+      }
+    });
+    if (badwords.length > 0) {
+      const cleanWords = cleanWordsInLine(line, badwords);
+      console.log(cleanWords)
+      return res.status(200).json(
+        {
+          badWords: badwords,
+          label: badwords.length,
+          cleanWord: cleanWords,
+          message: "This is VN badword"
+        });
+    }
+    const name = line;
+    const badw = await Badword.find({ name });
+    console.log(badw.length > 0 && badw)
+    if (badw && badw.length > 0) {
+      badwords.push(badw);
+    }
+    const db = word.map(async (nameW) => {
+      const bad = await Badword.find({ name: nameW });
+      return { nameW, bad };
+    });
+    const dbResults = await Promise.all(db);
+    dbResults.forEach(e => {
+      if (e.bad.length > 0) {
+        hasBadword = e.bad;
+        return;
+      }
+    });
+
+    if (hasBadword) {
+      badwords.push(hasBadword);
+    }
+
+    if (badwords.length > 0) {
+      const cleanWords = this.cleanWords(line, badwords);
+      return res.status(200).json(
+        {
+          badWords: badwords,
+          label: badwords.length,
+          cleanWord: cleanWords,
+          message: "This is VN badword"
+        });
+    }
+
+    return res.status(404).json({ badWords: badwords, label: 0, message: "Word not found" });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: "ERR" });
+  }
+};
+
 
 function cleanWordsInLine(s, badwords) {
   badwords.forEach((e, i) => {
