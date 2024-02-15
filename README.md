@@ -1,5 +1,13 @@
 # Check từ ngữ bậy bạ tiếng Việt
 
+Trước khi đến với dự án, mình sẽ hướng dẫn các bạn cách sử dụng trước nhé
+
+## Các APIs được public
+| Chức năng                    | Phương thức | APIs                                                             | Kết quả                   |
+|------------------------------|-------------|------------------------------------------------------------------|---------------------------|
+| làm sạch một câu nếu có chứa từ xấu | GET         | `https://vietnamese-bad-words-detector.vercel.app/api/cleanword?word=thằng chó cút đi` | `thằng ... ... đi`       |
+| kiểm tra từ xấu              | GET         | `https://vietnamese-bad-words-detector.vercel.app/api/badword?name=chó` | `This is VN badword`     |
+
 User sẽ gửi dữ liệu lên Request, ví dụ:
 
 
