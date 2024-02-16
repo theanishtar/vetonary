@@ -1,6 +1,6 @@
 const cache = require("../controllers/redis.controller");
 const controller = require("../controllers/badword.controller");
-const auth = require("../middlewares/authMongo");
+const auth = require("../middlewares/authJwt");
 
 module.exports = function (app, redis) {
   app.use(function (req, res, next) {
