@@ -320,6 +320,19 @@ function cleanWordsInLine(s, badwords) {
   return s.trim();
 }
 
+
+exports.getAllDB = async (req, res) => {
+  try {
+    const badwords = await Badword.find();
+
+    return res.status(200).json({
+      badwords
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+
 //api/db?name=cút
 exports.getDB = async (req, res) => {
   const name = req.query.name;
