@@ -13,7 +13,7 @@ module.exports = function (app, redis) {
   });
 
   app.get('/api/badwords', auth.verifyToken, (req, res) => controller.getAllBadwords(req, res, redis));
-  app.get('/api/badword', auth.verifyToken, (req, res) => controller.getBadwordByName(req, res, redis)); //api/badword?name=cút
+  app.get('/api/badword', (req, res) => controller.getBadwordByName(req, res, redis)); //api/badword?name=cút
   app.post('/api/badword', (req, res) => controller.checkBadword(req, res, redis));
   app.post('/api/cleanwords', (req, res) => controller.cleanWords(req, res, redis));
   app.get('/api/cleanword', (req, res) => controller.getCleanWords(req, res, redis)); //api/cleanword?word=cút

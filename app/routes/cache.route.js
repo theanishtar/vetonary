@@ -14,8 +14,8 @@ module.exports = function (app, redis) {
   app.get('/api/caches', auth.verifyToken, (req, res) => cache.getAllCache(req, res, redis));
   app.get('/api/missing', auth.verifyToken, (req, res) => cache.missingRedis(req, res, redis));
   app.post('/api/caches', auth.verifyToken, (req, res) => cache.addAllMongoToRedis(req, res, redis));
-  app.get('/api/cache', auth.verifyToken, (req, res) => cache.getCacheByKey(req, res, redis)); //api/cache?key=cút
+  app.get('/api/cache', (req, res) => cache.getCacheByKey(req, res, redis)); //api/cache?key=cút
   app.delete('/api/cache', auth.verifyToken, (req, res) => cache.deleteByKey(req, res, redis)); //api/cache?key=cút
   app.put('/api/cache', auth.verifyToken, (req, res) => cache.updateByKey(req, res, redis)); //api/cache?key=cút
-  app.post('/api/cache', auth.verifyToken, (req, res) => cache.postCache(req, res, redis)); //api/cache?key=cút
+  app.post('/api/cache', auth.verifyToken, (req, res) => cache.postCache(req, res, redis)); //api/cache
 };

@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
 require("./app/routes/badword.route")(app, redis);
 require("./app/routes/cache.route")(app, redis);
 require("./app/routes/auth.route")(app);
+require("./app/routes/db.route")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 5152;

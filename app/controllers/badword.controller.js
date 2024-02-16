@@ -319,3 +319,116 @@ function cleanWordsInLine(s, badwords) {
   });
   return s.trim();
 }
+
+//api/db?name=cút
+exports.getDB = async (req, res) => {
+  const name = req.query.name;
+  try {
+    const badwords = await Badword.find({ name });
+    console.log(badwords.length)
+    if (badwords.length == 0)
+      return res.status(404).json({
+        badWords: badwords,
+        label: badwords.length,
+        message: "Word not found"
+      });
+
+    return res.status(200).json({
+      badwords: badwords,
+      label: badwords.length,
+      message: "This is VN badword"
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+
+exports.postDB = async (req, res) => {
+  const { name, label, severityLevel } = req.body;
+  try {
+    const badwords = await Badword.find({ name });
+    if (badwords.length != 0)
+      return res.status(201).json({
+        badwords: badwords,
+        status: 0,
+        action: "Failed",
+        message: "Word is same from database, please post new data"
+      });
+    const badword = {
+      name: name,
+      label: label,
+      severityLevel: severityLevel,
+      createDate: new Date()
+    }
+    const newBadword = new Badword(badword);
+    const saveBadword = newBadword.save();
+    return res.status(200).json({
+      badword: newBadword,
+      status: 1,
+      action: "Successfully",
+      message: "Word is saved to database"
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+
+
+exports.updateDB = async (req, res) => {
+  const { name, label, severityLevel } = req.body;
+  try {
+    const badwords = await Badword.find({ name });
+    if (badwords.length == 0)
+      return res.status(404).json({
+        badwords: badwords,
+        status: 0,
+        action: "Failed",
+        message: `Word with name = ${name} is not found`
+      });
+    console.log(badwords[0]._id);
+    const badword = {
+      name: name,
+      label: label,
+      severityLevel: severityLevel,
+      createDate: badwords[0].createDate
+    }
+    const updatedBadword = await Badword.updateOne({ _id: badwords[0]._id }, { $set: badword });
+    return res.status(200).json({
+      badword: badword,
+      status: 1 ? updatedBadword.acknowledged : 0,
+      change: updatedBadword.modifiedCount,
+      action: "Successfully",
+      message: "Word is updated to database"
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+
+
+//api/db?name=cút
+exports.deleteDB = async (req, res) => {
+  const name = req.query.name;
+  try {
+    const badwords = await Badword.find({ name });
+    console.log(badwords.length)
+    if (badwords.length == 0)
+      return res.status(404).json({
+        badWords: badwords,
+        label: badwords.length,
+        message: "Word not found"
+      });
+
+    const deleteBadword = await Badword.deleteOne({ _id: badwords[0]._id });
+    return res.status(200).json({
+      badwords: badwords,
+      status: 1 ? deleteBadword.acknowledged : 0,
+      change: deleteBadword.deletedCount,
+      action: "Successfully",
+      message: "Word is deleted to database"
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
+//CRUD MONGODB
