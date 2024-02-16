@@ -11,11 +11,11 @@ module.exports = function (app) {
     next();
   });
   //CRUD
-  app.get('/api/dbs', auth.isAdmin, (req, res) => controller.getAllDB(req, res)); //api/db?name=cút
-  app.get('/api/db', auth.isModerator, (req, res) => controller.getDB(req, res)); //api/db?name=cút
-  app.post('/api/db', auth.isModerator, (req, res) => controller.postDB(req, res)); //api/db
-  app.put('/api/db', auth.isModerator, (req, res) => controller.updateDB(req, res)); //api/db
-  app.delete('/api/db', auth.isModerator, (req, res) => controller.deleteDB(req, res)); //api/db?name=cút
+  app.get('/api/dbs', auth.isAdmin, (req, res) => controller.getAllBadwordFromDB(req, res)); //api/db?name=cút
+  app.get('/api/db', auth.isModerator, (req, res) => controller.getBadwordFromDbByName(req, res)); //api/db?name=cút
+  app.post('/api/db', auth.isModerator, (req, res) => controller.postBadwordToDB(req, res)); //api/db
+  app.put('/api/db', auth.isModerator, (req, res) => controller.updateBadwordInDbByName(req, res)); //api/db
+  app.delete('/api/db', auth.isModerator, (req, res) => controller.deleteBadwordInDbByName(req, res)); //api/db?name=cút
   ///app.delete('/api/db', auth.verifyToken, (req, res) => cache.deleteByKey(req, res, redis)); //api/db?name=cút
 
 };

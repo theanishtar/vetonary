@@ -321,7 +321,7 @@ function cleanWordsInLine(s, badwords) {
 }
 
 
-exports.getAllDB = async (req, res) => {
+exports.getAllBadwordFromDB = async (req, res) => {
   try {
     const badwords = await Badword.find();
 
@@ -334,7 +334,7 @@ exports.getAllDB = async (req, res) => {
 };
 
 //api/db?name=cút
-exports.getDB = async (req, res) => {
+exports.getBadwordFromDbByName = async (req, res) => {
   const name = req.query.name;
   try {
     const badwords = await Badword.find({ name });
@@ -356,7 +356,7 @@ exports.getDB = async (req, res) => {
   }
 };
 
-exports.postDB = async (req, res) => {
+exports.postBadwordToDB = async (req, res) => {
   const { name, label, severityLevel } = req.body;
   try {
     const badwords = await Badword.find({ name });
@@ -387,7 +387,7 @@ exports.postDB = async (req, res) => {
 };
 
 
-exports.updateDB = async (req, res) => {
+exports.updateBadwordInDbByName = async (req, res) => {
   const { name, label, severityLevel } = req.body;
   try {
     const badwords = await Badword.find({ name });
@@ -420,7 +420,7 @@ exports.updateDB = async (req, res) => {
 
 
 //api/db?name=cút
-exports.deleteDB = async (req, res) => {
+exports.deleteBadwordInDbByName = async (req, res) => {
   const name = req.query.name;
   try {
     const badwords = await Badword.find({ name });
