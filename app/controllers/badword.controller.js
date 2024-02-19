@@ -98,25 +98,37 @@ exports.checkBadword = async (req, res, redis) => {
         });
     }
 
-    const word = line.split(" ");
-    const cache = word.map(async (name) => {
-      const bad = await redis.get(name);
-      return { name, bad };
-    });
-    const results = await Promise.all(cache);
 
-    results.forEach(e => {
-      if (e.bad != null) {
-        hasBadword = JSON.parse(e.bad);
-        badwords.push(hasBadword);
+    let data = [];
+    const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
+    const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
+
+    // Thêm các lệnh hỏi Redis để lấy dữ liệu tương ứng với từng key vào pipeline
+    keys.forEach(key => {
+      pipeline.get(key);
+    });
+
+    // Thực hiện pipeline để lấy dữ liệu từ Redis
+    const results = await pipeline.exec();
+
+    // Tạo một đối tượng chứa dữ liệu từ Redis
+    results.forEach((result, index) => {
+      const key = keys[index];
+      const value = result[1]; // result[1] chứa giá trị được trả về từ Redis
+      data.push({ key: key, value: JSON.parse(value) });
+    });
+    data.forEach(e => {
+      if (line.includes(e.key)) {
+        checkContains = e.value;
+        badwords.push(checkContains);
         return;
       }
-    });
-    if (badwords.length > 0)
+    })
+    if (checkContains)
       return res.status(200).json(
         {
           badWords: badwords,
-          label: hasBadword.label,
+          label: badwords.length,
           message: "This is VN badword"
         });
     const name = line;
