@@ -29,38 +29,58 @@ exports.addData = async (req, res, redis) => {
 exports.getAllCache = async (req, res, redis) => {
   try {
     let data = [];
-    redis.keys("*", function (err, keys) {
-      if (err) {
-        console.error("Error retrieving keys:", err);
-        res.json({ err: err });
-        return;
-      }
+    // redis.keys("*", function (err, keys) {
+    //   if (err) {
+    //     console.error("Error retrieving keys:", err);
+    //     res.json({ err: err });
+    //     return;
+    //   }
 
-      // Sử dụng Promise.all để đợi cho tất cả các lời gọi redis.get hoàn thành
-      let promises = keys.map(function (key) {
-        return new Promise(function (resolve, reject) {
-          redis.get(key, function (err, value) {
-            if (err) {
-              console.error("Error retrieving value for key", key, ":", err);
-              reject(err);
-            } else {
-              console.log("Key:", key, "Value:", value);
-              data.push({ key: key, val: JSON.parse(value) });
-              resolve();
-            }
-          });
-        });
-      });
+    //   // Sử dụng Promise.all để đợi cho tất cả các lời gọi redis.get hoàn thành
+    //   let promises = keys.map(function (key) {
+    //     return new Promise(function (resolve, reject) {
+    //       redis.get(key, function (err, value) {
+    //         if (err) {
+    //           console.error("Error retrieving value for key", key, ":", err);
+    //           reject(err);
+    //         } else {
+    //           console.log("Key:", key, "Value:", value);
+    //           data.push({ key: key, val: JSON.parse(value) });
+    //           resolve();
+    //         }
+    //       });
+    //     });
+    //   });
 
-      // Sau khi tất cả các promises đã được giải quyết, gọi res.json
-      Promise.all(promises)
-        .then(function () {
-          res.json(data);
-        })
-        .catch(function (err) {
-          res.json({ err: err });
-        });
+    //   // Sau khi tất cả các promises đã được giải quyết, gọi res.json
+    //   Promise.all(promises)
+    //     .then(function () {
+    //       res.json(data);
+    //     })
+    //     .catch(function (err) {
+    //       res.json({ err: err });
+    //     });
+    // });
+
+    const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
+    const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
+
+    // Thêm các lệnh hỏi Redis để lấy dữ liệu tương ứng với từng key vào pipeline
+    keys.forEach(key => {
+      pipeline.get(key);
     });
+
+    // Thực hiện pipeline để lấy dữ liệu từ Redis
+    const results = await pipeline.exec();
+
+    // Tạo một đối tượng chứa dữ liệu từ Redis
+    results.forEach((result, index) => {
+      const key = keys[index];
+      const value = result[1]; // result[1] chứa giá trị được trả về từ Redis
+      data.push({ key: key, value: JSON.parse(value) });
+    });
+
+    return res.json(data)
 
   } catch (error) {
     console.log(error);

@@ -29,14 +29,40 @@ exports.getAllBadwords = async (req, res, redis) => {
 };
 
 exports.getBadwordByName = async (req, res, redis) => {
-  const name = req.query.name;
   try {
+    const name = req.query.name;
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(name);
     if (findCache)
       return res.status(200).json({ data: JSON.parse(findCache), message: "This is VN badword" });
 
-    console.log("Khong co trong cache")
+    let data = [];
+    const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
+    const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
+
+    // Thêm các lệnh hỏi Redis để lấy dữ liệu tương ứng với từng key vào pipeline
+    keys.forEach(key => {
+      pipeline.get(key);
+    });
+
+    // Thực hiện pipeline để lấy dữ liệu từ Redis
+    const results = await pipeline.exec();
+
+    // Tạo một đối tượng chứa dữ liệu từ Redis
+    results.forEach((result, index) => {
+      const key = keys[index];
+      const value = result[1]; // result[1] chứa giá trị được trả về từ Redis
+      data.push({ key: key, value: JSON.parse(value) });
+    });
+    data.forEach(e => {
+      if (name.includes(e.key)) {
+        checkContains = e.value;
+        return;
+      }
+    })
+    if (checkContains)
+      return res.status(200).json({ data: checkContains, message: "This is VN badword" });
+
     const badwords = await Badword.find({ name });
     console.log(badwords.length)
     if (badwords.length == 0)
@@ -44,7 +70,7 @@ exports.getBadwordByName = async (req, res, redis) => {
 
     return res.status(200).json({ data: badwords, message: "This is VN badword" });
   } catch (error) {
-    return res.status(500).json({ error: "Error" });
+    return res.status(500).json({ error: `Error ${error}` });
   }
 };
 
