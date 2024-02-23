@@ -3,10 +3,12 @@
 Trước khi đến với dự án, mình sẽ hướng dẫn các bạn cách sử dụng trước nhé
 
 ## Các APIs được public
-| Chức năng                    | Phương thức | APIs                                                             | Kết quả                   |
-|------------------------------|-------------|------------------------------------------------------------------|---------------------------|
-| làm sạch một câu nếu có chứa từ xấu | GET         | `https://vietnamese-bad-words-detector.vercel.app/api/cleanword?word=thằng chó cút đi` | `thằng ... ... đi`       |
-| kiểm tra từ xấu              | GET         | `https://vietnamese-bad-words-detector.vercel.app/api/badword?name=chó` | `This is VN badword`     |
+|Ngày phát hành| Chức năng                    | Phương thức | APIs                                                            | Body | Kết quả                   |
+|---------|---------------------|-------------|-------------------|-----------------------------------------------|---------------------------|
+| | làm sạch một câu nếu có chứa từ xấu | GET         | `/api/cleanword?word=thằng chó cút đi` | `thằng ... ... đi`       |
+| | kiểm tra từ xấu              | GET         | `/api/badword?name=chó` | `This is VN badword`     |
+| 19/02/2024| Tối ưu tìm kiếm | POST | `/api/badwords` | tâm dâm quá|This is VN badword|
+|23/02/2024 | Tối ưu tìm kiếm | POST | `api/cleanwords` |tâm dâm quá|******* quá|
 
 User sẽ gửi dữ liệu lên Request, ví dụ:
 
