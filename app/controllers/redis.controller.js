@@ -29,39 +29,6 @@ exports.addData = async (req, res, redis) => {
 exports.getAllCache = async (req, res, redis) => {
   try {
     let data = [];
-    // redis.keys("*", function (err, keys) {
-    //   if (err) {
-    //     console.error("Error retrieving keys:", err);
-    //     res.json({ err: err });
-    //     return;
-    //   }
-
-    //   // Sử dụng Promise.all để đợi cho tất cả các lời gọi redis.get hoàn thành
-    //   let promises = keys.map(function (key) {
-    //     return new Promise(function (resolve, reject) {
-    //       redis.get(key, function (err, value) {
-    //         if (err) {
-    //           console.error("Error retrieving value for key", key, ":", err);
-    //           reject(err);
-    //         } else {
-    //           console.log("Key:", key, "Value:", value);
-    //           data.push({ key: key, val: JSON.parse(value) });
-    //           resolve();
-    //         }
-    //       });
-    //     });
-    //   });
-
-    //   // Sau khi tất cả các promises đã được giải quyết, gọi res.json
-    //   Promise.all(promises)
-    //     .then(function () {
-    //       res.json(data);
-    //     })
-    //     .catch(function (err) {
-    //       res.json({ err: err });
-    //     });
-    // });
-
     const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
     const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
 
@@ -102,9 +69,9 @@ exports.postCache = async (req, res, redis) => {
     // Giá trị mới cần thiết lập cho key
     const badWord = {
       name: req.body.name,
-      label: req.body.label,
-      severityLevel: req.body.severityLevel,
-      createDate: req.body.createDate
+      label: req.body.label || 1,
+      severityLevel: req.body.severityLevel || 1,
+      createDate: new Date()
     }
     const key = badWord.name;
     console.log(badWord)
@@ -254,5 +221,30 @@ exports.missingRedis = async (req, res, redis) => {
 
   // Tiếp tục xử lý dữ liệu sau khi đã lấy được dữ liệu từ Redis
   console.log(data);
+  return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
+}
+
+exports.missingMongo = async (req, res, redis) => {
+  let data = [];
+  const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
+  const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
+
+  // Thêm các lệnh hỏi Redis để lấy dữ liệu tương ứng với từng key vào pipeline
+  keys.forEach(key => {
+    pipeline.get(key);
+  });
+
+  // Thực hiện pipeline để lấy dữ liệu từ Redis
+  const caches = await pipeline.exec();
+
+  for (let result of caches) {
+    const value = JSON.parse(result[1]); // result[1] chứa giá trị được trả về từ Redis
+    // console.log(`value: ${value}`);
+    const badword = await Badword.find({ name: value.name });
+
+    if (badword.length === 0) {
+      data.push(value)
+    }
+  }
   return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
 }
