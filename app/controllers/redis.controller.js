@@ -236,15 +236,15 @@ exports.missingMongo = async (req, res, redis) => {
 
   // Thực hiện pipeline để lấy dữ liệu từ Redis
   const caches = await pipeline.exec();
+  const badwords = await Badword.find().select('name');
+  const names = badwords.map(badword => badword.name);
 
   for (let result of caches) {
-    const value = JSON.parse(result[1]); // result[1] chứa giá trị được trả về từ Redis
-    // console.log(`value: ${value}`);
-    const badword = await Badword.find({ name: value.name });
-
-    if (badword.length === 0) {
-      data.push(value)
+    const cache = JSON.parse(result[1]); // result[1] chứa giá trị được trả về từ Redis
+    if (names.indexOf(cache.name) < 0) {
+      data.push(cache)
     }
   }
+
   return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
 }
