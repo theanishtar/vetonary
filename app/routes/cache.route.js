@@ -11,6 +11,7 @@ module.exports = function (app, redis) {
     next();
   });
 
+  app.get('/api/caches/top', (req, res) => cache.getTop100(req, res, redis));
   app.get('/api/caches', auth.isModerator, (req, res) => cache.getAllCache(req, res, redis));
   app.get('/api/missingRedis', auth.isModerator, (req, res) => cache.missingRedis(req, res, redis));
   app.get('/api/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis));
