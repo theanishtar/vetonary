@@ -417,8 +417,8 @@ exports.postBadwordToDB = async (req, res) => {
       });
     const badword = {
       name: name,
-      label: label,
-      severityLevel: severityLevel,
+      label: label || 1,
+      severityLevel: severityLevel || 1,
       createDate: new Date()
     }
     const newBadword = new Badword(badword);

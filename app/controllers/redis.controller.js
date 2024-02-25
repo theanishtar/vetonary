@@ -210,7 +210,6 @@ exports.addAllMongoToRedis = async (eq, res, redis) => {
 exports.missingRedis = async (req, res, redis) => {
   const badwords = await Badword.find();
   let data = [];
-  let len = 0;
 
   // Sử dụng Promise.all để xử lý bất đồng bộ
   await Promise.all(badwords.map(async (e) => {
@@ -227,22 +226,14 @@ exports.missingRedis = async (req, res, redis) => {
 exports.missingMongo = async (req, res, redis) => {
   let data = [];
   const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
-  const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
-
-  // Thêm các lệnh hỏi Redis để lấy dữ liệu tương ứng với từng key vào pipeline
-  keys.forEach(key => {
-    pipeline.get(key);
-  });
-
-  // Thực hiện pipeline để lấy dữ liệu từ Redis
-  const caches = await pipeline.exec();
   const badwords = await Badword.find().select('name');
   const names = badwords.map(badword => badword.name);
 
-  for (let result of caches) {
-    const cache = JSON.parse(result[1]); // result[1] chứa giá trị được trả về từ Redis
-    if (names.indexOf(cache.name) < 0) {
-      data.push(cache)
+  for (let key of keys) {
+    if (names.indexOf(key) < 0) {
+      const cache = await redis.get(key);
+      console.log(cache)
+      data.push(JSON.parse(cache));
     }
   }
 
