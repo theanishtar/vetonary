@@ -11,12 +11,12 @@ module.exports = function (app, redis) {
     next();
   });
 
-  app.get('/api/caches', (req, res) => cache.getAllCache(req, res, redis));
-  app.get('/api/missingRedis', (req, res) => cache.missingRedis(req, res, redis));
-  app.get('/api/missingMongo', (req, res) => cache.missingMongo(req, res, redis));
-  app.post('/api/caches', (req, res) => cache.addAllMongoToRedis(req, res, redis));
+  app.get('/api/caches', auth.isModerator, (req, res) => cache.getAllCache(req, res, redis));
+  app.get('/api/missingRedis', auth.isModerator, (req, res) => cache.missingRedis(req, res, redis));
+  app.get('/api/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis));
+  app.post('/api/caches', auth.isModerator, (req, res) => cache.addAllMongoToRedis(req, res, redis));
   app.get('/api/cache', (req, res) => cache.getCacheByKey(req, res, redis)); //api/cache?key=cút
-  app.delete('/api/cache', (req, res) => cache.deleteByKey(req, res, redis)); //api/cache?key=cút
-  app.put('/api/cache', (req, res) => cache.updateByKey(req, res, redis)); //api/cache?key=cút
-  app.post('/api/cache', (req, res) => cache.postCache(req, res, redis)); //api/cache
+  app.delete('/api/cache', auth.isModerator, (req, res) => cache.deleteByKey(req, res, redis)); //api/cache?key=cút
+  app.put('/api/cache', auth.isModerator, (req, res) => cache.updateByKey(req, res, redis)); //api/cache?key=cút
+  app.post('/api/cache', auth.isModerator, (req, res) => cache.postCache(req, res, redis)); //api/cache
 };

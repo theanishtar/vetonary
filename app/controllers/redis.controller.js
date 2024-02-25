@@ -209,17 +209,15 @@ exports.addAllMongoToRedis = async (eq, res, redis) => {
 
 exports.missingRedis = async (req, res, redis) => {
   const badwords = await Badword.find();
+  const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
   let data = [];
 
   // Sử dụng Promise.all để xử lý bất đồng bộ
-  await Promise.all(badwords.map(async (e) => {
-    const findCache = await redis.get(e.name);
-    if (!findCache)
+  badwords.forEach(e => {
+    if (keys.indexOf(e.name) < 0)
       data.push(e);
-  }));
+  })
 
-  // Tiếp tục xử lý dữ liệu sau khi đã lấy được dữ liệu từ Redis
-  console.log(data);
   return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
 }
 
@@ -232,7 +230,6 @@ exports.missingMongo = async (req, res, redis) => {
   for (let key of keys) {
     if (names.indexOf(key) < 0) {
       const cache = await redis.get(key);
-      console.log(cache)
       data.push(JSON.parse(cache));
     }
   }
