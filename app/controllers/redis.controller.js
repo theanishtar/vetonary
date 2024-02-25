@@ -239,6 +239,7 @@ exports.missingMongo = async (req, res, redis) => {
 
 
 exports.getTop100 = async (req, res, redis) => {
+
   let data = [];
   const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
   const pipeline = redis.pipeline(); // Tạo một pipeline để thực hiện các lệnh redis một cách tuần tự
@@ -262,10 +263,25 @@ exports.getTop100 = async (req, res, redis) => {
 
   // Lấy 100 dòng đầu tiên của 'data'
   const first100Lines = data.slice(0, 100);
+  if (data.length > 0)
+    return res.status(200).json({
+      data: first100Lines,
+      message: `APIs are developed for reference purposes, therefore only ${first100Lines.length} lines of data are available. Please contact github.com/Theanishtar to obtain the entire dataset.`,
+      src: `Cahes`,
+      sponsor: {
+        sub: `To upgrade your account, please support the developer according to the following information!`,
+        bank_name: `Viettinbank`,
+        acc_number: `104878145669`,
+        user_name: `TRAN HUU DANG`
+      }
+    });
 
+  const badwords = await Badword.find();
+  const bwfirst100Lines = badwords.slice(0, 100);
   return res.status(200).json({
-    data: first100Lines,
-    message: `APIs are developed for reference purposes, therefore only ${first100Lines.length} lines of data are available. Please contact github.com/Theanishtar to obtain the entire dataset.`,
+    data: bwfirst100Lines,
+    message: `APIs are developed for reference purposes, therefore only ${bwfirst100Lines.length} lines of data are available. Please contact github.com/Theanishtar to obtain the entire dataset.`,
+    src: `Database`,
     sponsor: {
       sub: `To upgrade your account, please support the developer according to the following information!`,
       bank_name: `Viettinbank`,
@@ -273,4 +289,5 @@ exports.getTop100 = async (req, res, redis) => {
       user_name: `TRAN HUU DANG`
     }
   });
+
 }
