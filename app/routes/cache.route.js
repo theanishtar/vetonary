@@ -11,10 +11,10 @@ module.exports = function (app, redis) {
     next();
   });
 
-  app.get('/api/caches/top', (req, res) => cache.getTop100(req, res, redis));
+  app.get('/api/cache/top', (req, res) => cache.getTop100(req, res, redis));
   app.get('/api/caches', auth.isModerator, (req, res) => cache.getAllCache(req, res, redis));
-  app.get('/api/missingRedis', auth.isModerator, (req, res) => cache.missingRedis(req, res, redis));
-  app.get('/api/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis));
+  app.get('/api/cache/missingRedis', auth.isModerator, (req, res) => cache.missingRedis(req, res, redis));
+  app.get('/api/cache/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis));
   app.post('/api/caches', auth.isModerator, (req, res) => cache.addAllMongoToRedis(req, res, redis));
   app.get('/api/cache', (req, res) => cache.getCacheByKey(req, res, redis)); //api/cache?key=cút
   app.delete('/api/cache', auth.isModerator, (req, res) => cache.deleteByKey(req, res, redis)); //api/cache?key=cút

@@ -16,6 +16,5 @@ module.exports = function (app) {
   app.post('/api/db', auth.isModerator, (req, res) => controller.postBadwordToDB(req, res)); //api/db
   app.put('/api/db', auth.isModerator, (req, res) => controller.updateBadwordInDbByName(req, res)); //api/db
   app.delete('/api/db', auth.isModerator, (req, res) => controller.deleteBadwordInDbByName(req, res)); //api/db?name=cút
-  ///app.delete('/api/db', auth.verifyToken, (req, res) => cache.deleteByKey(req, res, redis)); //api/db?name=cút
 
 };

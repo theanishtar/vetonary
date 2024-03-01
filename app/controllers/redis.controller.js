@@ -140,10 +140,10 @@ exports.updateByKey = async (req, res, redis) => {
 
     // Giá trị mới cần thiết lập cho key
     const badWord = {
-      name: req.body.name,
-      label: req.body.label,
-      severityLevel: req.body.severityLevel,
-      createDate: req.body.createDate
+      name: req.body.name || key,
+      label: req.body.label || findCache.label,
+      severityLevel: req.body.severityLevel || findCache.label,
+      createDate: req.body.createDate || findCache.createDate
     }
     console.log(badWord)
 

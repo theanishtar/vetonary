@@ -12,9 +12,9 @@ module.exports = function (app, redis) {
     next();
   });
 
-  app.get('/api/badwords', auth.verifyToken, (req, res) => controller.getAllBadwords(req, res, redis));
+  app.get('/api/badwords', auth.isAdmin, (req, res) => controller.getAllBadwords(req, res, redis));
   app.get('/api/badword', (req, res) => controller.getBadwordByName(req, res, redis)); //api/badword?name=cút
   app.post('/api/badwords', (req, res) => controller.checkBadword(req, res, redis));
   app.post('/api/cleanwords', (req, res) => controller.cleanWords(req, res, redis));
-  app.get('/api/cleanword', (req, res) => controller.getCleanWords(req, res, redis)); //api/cleanword?word=cút
+  app.get('/api/cleanwords', (req, res) => controller.cleanWords(req, res, redis)); //api/cleanword?word=cút
 };

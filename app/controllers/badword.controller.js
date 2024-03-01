@@ -174,7 +174,7 @@ exports.checkBadword = async (req, res, redis) => {
 
 
 exports.cleanWords = async (req, res, redis) => {
-  const line = req.body.words;
+  const line = req.body.words || req.query.word;
   let hasBadword; // Cờ để kiểm tra xem có badword không
   let badwords = [];
   try {
