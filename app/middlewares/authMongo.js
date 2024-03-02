@@ -18,7 +18,7 @@ verifyToken = async (req, res, next) => {
       message: "Unauthorized!",
     });
   }
-  req.role = user.role;
+  req.roles = user.roles;
   next();
 };
 

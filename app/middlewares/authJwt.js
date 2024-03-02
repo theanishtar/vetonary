@@ -21,7 +21,7 @@ verifyToken = async (req, res, next) => {
       }
       console.log(decoded)
       req.username = decoded.username;
-      req.roles = decoded.role;
+      req.roles = decoded.roles;
       next();
     });
 };
@@ -42,7 +42,7 @@ isAdmin = (req, res, next) => {
         });
       }
       console.log(decoded)
-      if (!decoded.role.includes('ADMIN'))
+      if (!decoded.roles.includes('ADMIN'))
         return res.status(403).send({
           message: "Forbidden!",
         });
@@ -66,7 +66,7 @@ isModerator = (req, res, next) => {
         });
       }
       console.log(decoded)
-      if (!decoded.role.includes('MODERATOR'))
+      if (!decoded.roles.includes('MODERATOR'))
         return res.status(403).send({
           message: "Forbidden!",
         });
