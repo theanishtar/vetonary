@@ -1,5 +1,31 @@
 const Badword = require("../models/badword.model");
 
+// Function to retrieve keys starting with a specific prefix
+async function getKeysByPrefix(redis, prefix) {
+  try {
+    let cursor = '0';
+    let data = [];
+    do {
+      const result = await redis.scan(cursor, 'MATCH', prefix + '*', 'COUNT', '1000');
+      cursor = result[0];
+      let keysWithPrefix = result[1];
+
+      // Loại bỏ prefix từ các keys và thêm chúng vào mảng keys
+      let keysWithoutPrefix = keysWithPrefix.map(key => key.replace(prefix, ''));
+      const cache = {
+        key: keysWithoutPrefix,
+        // value: await redis.get(keysWithPrefix)
+      }
+      data = data.concat(keysWithoutPrefix);
+    } while (cursor !== '0');
+
+    return data;
+  } catch (error) {
+    console.error('Error retrieving keys by prefix:', error);
+    return [];
+  }
+}
+
 const dataArr = [
   {
     name: 'dangdepzai',
@@ -26,6 +52,27 @@ exports.addData = async (req, res, redis) => {
   })
 };
 
+exports.getCachesPater = async (req, res, redis, prefix) => {
+  try {
+    const pref = req.query.pref || prefix;
+    getKeysByPrefix(redis, pref)
+      .then(keys => {
+        // console.log(keys)
+        // console.log('Keys starting with prefix', prefix + ':', keys.length);
+        return res.json({
+          prefix: pref,
+          data: keys
+        })
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
+  } catch (error) {
+
+  }
+}
+
 exports.getAllCache = async (req, res, redis) => {
   try {
     let data = [];
@@ -44,7 +91,11 @@ exports.getAllCache = async (req, res, redis) => {
     results.forEach((result, index) => {
       const key = keys[index];
       const value = result[1]; // result[1] chứa giá trị được trả về từ Redis
+      console.log(result[1]);
+      // data.push({ key: key, value: JSON.parse(unescapedValue) });
       data.push({ key: key, value: JSON.parse(value) });
+
+
     });
 
     return res.json(data)

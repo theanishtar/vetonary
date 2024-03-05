@@ -26,6 +26,7 @@ app.use(
 
 const redisURI = process.env.REDIS_URI;
 const mongodbURI = process.env.MONGODB_URI;
+const prefix = process.env.PREFIX;
 
 const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 // Kiểm tra trạng thái kết nối
@@ -56,7 +57,7 @@ app.get('/', (req, res) => {
   res.json("Hello server is live");
 });
 require("./app/routes/badword.route")(app, redis);
-require("./app/routes/cache.route")(app, redis);
+require("./app/routes/cache.route")(app, redis, prefix);
 require("./app/routes/auth.route")(app);
 require("./app/routes/db.route")(app);
 require("./app/routes/contribute.route")(app);
