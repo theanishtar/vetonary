@@ -1,5 +1,13 @@
 const Badword = require("../models/badword.model");
 
+const dataArr = [
+  {
+    name: 'dangdepzai',
+    label: 1,
+    severityLevel: 1,
+    createDate: '2020-05-18T14:10:30Z'
+  }
+]
 // Function to retrieve keys starting with a specific prefix
 async function getKeysByPrefix(redis, prefix) {
   try {
@@ -26,18 +34,10 @@ async function getKeysByPrefix(redis, prefix) {
   }
 }
 
-const dataArr = [
-  {
-    name: 'dangdepzai',
-    label: 1,
-    severityLevel: 1,
-    createDate: '2020-05-18T14:10:30Z'
-  }
-]
-exports.addData = async (req, res, redis) => {
+exports.addData = async (req, res, redis, prefix) => {
   dataArr.forEach(e => {
     let bdw = { name: e.name, label: e.label, severityLevel: e.severityLevel, createDate: e.createDate }
-    redis.set(e.name, JSON.stringify(bdw))
+    redis.set(prefix + e.name, JSON.stringify(bdw))
       .then(() => {
         console.log('Dữ liệu đã được thêm vào Redis thành công.', bdw);
       })
@@ -73,7 +73,7 @@ exports.getCachesPater = async (req, res, redis, prefix) => {
   }
 }
 
-exports.getAllCache = async (req, res, redis) => {
+exports.getAllCache = async (req, res, redis, prefix) => {
   try {
     let data = [];
     const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
@@ -106,11 +106,11 @@ exports.getAllCache = async (req, res, redis) => {
   }
 };
 
-exports.postCache = async (req, res, redis) => {
+exports.postCache = async (req, res, redis, prefix) => {
 
   /*
   const data = {
-    name: "QWERTY",
+    name: "bw:::QWERTY",
     label: 1,
     severityLevel: 1,
     createDate: 2020-05-18T14:10:30Z
@@ -119,7 +119,7 @@ exports.postCache = async (req, res, redis) => {
   try {
     // Giá trị mới cần thiết lập cho key
     const badWord = {
-      name: req.body.name,
+      name: prefix + req.body.name,
       label: req.body.label || 1,
       severityLevel: req.body.severityLevel || 1,
       createDate: new Date()
@@ -153,8 +153,8 @@ exports.postCache = async (req, res, redis) => {
   }
 }
 
-exports.deleteByKey = async (req, res, redis) => {
-  const key = req.query.key;
+exports.deleteByKey = async (req, res, redis, prefix) => {
+  const key = prefix + req.query.key;
   try {
     // Xóa một key từ Redis
     redis.del(key).then((result) => {
@@ -172,8 +172,8 @@ exports.deleteByKey = async (req, res, redis) => {
   }
 }
 
-exports.updateByKey = async (req, res, redis) => {
-  const key = req.query.key;
+exports.updateByKey = async (req, res, redis, prefix) => {
+  const key = prefix + req.query.key;
 
   /*
   const data = {
@@ -221,8 +221,8 @@ exports.updateByKey = async (req, res, redis) => {
 
 }
 
-exports.getCacheByKey = async (req, res, redis) => {
-  const key = req.query.key;
+exports.getCacheByKey = async (req, res, redis, prefix) => {
+  const key = prefix + req.query.key;
   try {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(key);
@@ -238,12 +238,12 @@ exports.getCacheByKey = async (req, res, redis) => {
   }
 };
 
-exports.addAllMongoToRedis = async (eq, res, redis) => {
+exports.addAllMongoToRedis = async (eq, res, redis, prefix) => {
   const badwords = await Badword.find();
   let len = 0;
   badwords.forEach(e => {
     len++;
-    redis.set(e.name, JSON.stringify(e))
+    redis.set(prefix + e.name, JSON.stringify(e))
       .then(() => {
         console.log('Dữ liệu đã được thêm vào Redis thành công.', e);
       })
@@ -258,7 +258,7 @@ exports.addAllMongoToRedis = async (eq, res, redis) => {
   return res.status(200).json({ action: "Add Mongo to Redis", status: "success", message: `Add ${badwords.length} to Cache memory`, success: `${len} Objects` });
 };
 
-exports.missingRedis = async (req, res, redis) => {
+exports.missingRedis = async (req, res, redis, prefix) => {
   const badwords = await Badword.find();
   const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
   let data = [];
@@ -272,7 +272,7 @@ exports.missingRedis = async (req, res, redis) => {
   return res.status(200).json({ data: data, message: `${data.length} objects from Mongo are currently not present in Redis` });
 }
 
-exports.missingMongo = async (req, res, redis) => {
+exports.missingMongo = async (req, res, redis, prefix) => {
   let data = [];
   const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
   const badwords = await Badword.find().select('name');
@@ -289,7 +289,7 @@ exports.missingMongo = async (req, res, redis) => {
 }
 
 
-exports.getTop100 = async (req, res, redis) => {
+exports.getTop100 = async (req, res, redis, prefix) => {
 
   let data = [];
   const keys = await redis.keys('*'); // Lấy tất cả các key trong Redis
