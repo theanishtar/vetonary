@@ -4,7 +4,7 @@
 Vetonary APIs cung cấp các công cụ mạnh mẽ cho các nhà phát triển để kiểm tra và phân tích nội dung văn bản để phát hiện những từ ngữ thô tục, phản cảm, không phù hợp. Các API của chúng tôi giúp bạn duy trì một môi trường sạch sẽ và an toàn cho người dùng và cộng đồng của bạn.
 
 <p align="center">
-  <a href="https://github.com/theanishtar/vetonary"> <img width="200px" align="center" src="./images/logo-vetonary.png"></img></a> <br/>
+  <a href="https://github.com/theanishtar/vetonary"> <img width="200px" align="center" src="./images/hero.png"></img></a> <br/>
   <a href=""><img src="https://img.shields.io/github/last-commit/theanishtar/vetonary" alt="GitHub last commit"></a>
   <a href=""><img src="https://img.shields.io/github/forks/theanishtar/vetonary" alt="GitHub forks"></a>
   <a href=""><img src="https://img.shields.io/github/stars/theanishtar/vetonary" alt="GitHub Repo stars"></a>
