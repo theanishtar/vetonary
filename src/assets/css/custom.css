@@ -1,0 +1,37 @@
+.hero {
+  width: 70px;
+  height: 70px;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.navbar-brand {
+  align-items: center;
+}
+
+body {
+  width: 100%;
+}
+
+.container-fluid {
+  padding-right: 0px;
+  padding-left: 0;
+}
+
+/* body {
+  left: -17px;
+  width: 1466px;
+  height: 6334px;
+}
+
+.bg-hero {
+  width: 1466px;
+  height: 774px;
+  grid-area: auto;
+  line-height: 24px;
+  text-align: left;
+} */
+
+.navbar {
+  padding: 0;
+}
