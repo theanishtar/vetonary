@@ -24,6 +24,10 @@ app.use(
   })
 );
 
+let connectionStatus = {
+  redis: false,
+  mongoDB: false,
+};
 const redisURI = process.env.REDIS_URI;
 const mongodbURI = process.env.MONGODB_URI;
 const prefix = process.env.PREFIX;
@@ -32,6 +36,7 @@ const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 // Kiểm tra trạng thái kết nối
 redis.on("connect", function () {
   console.log("Connected to Redis successfully!");
+  connectionStatus.redis = true;
 });
 // Xử lý lỗi kết nối
 redis.on("error", function (error) {
@@ -45,6 +50,7 @@ db.mongoose
   })
   .then(() => {
     console.log("Successfully connect to MongoDB." + mongodbURI);
+    connectionStatus.mongoDB = true;
   })
   .catch(err => {
     console.error("Connection error", err);
@@ -54,7 +60,10 @@ db.mongoose
 // routes
 
 app.get('/', (req, res) => {
-  res.json("Hello server is live");
+  res.json({
+    live: "Hello server is live",
+    connection: connectionStatus
+  });
 });
 require("./app/routes/badword.route")(app, redis);
 require("./app/routes/cache.route")(app, redis, prefix);
