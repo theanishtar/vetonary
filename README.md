@@ -1,3 +1,4 @@
+
 # Chào mừng đến với Vetonary Check APIs
 
 Vetonary APIs cung cấp các công cụ mạnh mẽ cho các nhà phát triển để kiểm tra và phân tích nội dung văn bản để phát hiện những từ ngữ thô tục, phản cảm, không phù hợp. Các API của chúng tôi giúp bạn duy trì một môi trường sạch sẽ và an toàn cho người dùng và cộng đồng của bạn.
@@ -58,21 +59,11 @@ Bắt đầu sử dụng Vetonary Check APIs ngay hôm nay và tạo ra một m�
 ## Những người đóng góp mã nguồn
 
 
-<div style="padding: 0; margin: 0; ">
-    <div style=" display: inline-block; margin-right: 10px;">
-        <a href="https://github.com/theanishtar">
-          <img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="" style=" display: block; borderRadius: 50%;  border-radius: 50%; width: 30px; height: 30px;">
-        </a>
-<!--     <img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="" style="width: 30px;height: 30px;max-width: 100%;border-radius: 50%;"> -->
+<div style="list-style-type: none; padding: 0; margin: 0;">
+    <div style="display: inline-block; margin-right: 10px;">
+        <a href="https://github.com/theanishtar"><img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="Image 1" style="border-radius: 50%; width: 30px; height: 30px;"></a>
     </div>
     <!-- Add more images as needed -->
 </div>
 
-<!-- <style>
-  li a img{
-    border-radius: 50%; 
-  }
-</style> -->
-
 <a href="./CONTRIBUTING.md">Xem chi tiết</a>
-
