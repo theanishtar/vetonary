@@ -1,15 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'jquery';
-import 'feather-icons';
+import 'bootstrap/js/dist/tooltip';
+import $ from 'jquery';
+import 'bootstrap';
+import feather from 'feather-icons';
 import '@popperjs/core';
 import 'slick-carousel';
 import 'tooltip.js';
-import feather from 'feather-icons';
-import $ from 'jquery';
-import 'bootstrap';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 
-const main = () => {
+
+const main = main => {
   $(function () {
     // init feather icons
     feather.replace();
