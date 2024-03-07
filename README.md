@@ -57,19 +57,22 @@ Bắt đầu sử dụng Vetonary Check APIs ngay hôm nay và tạo ra một m�
 
 ## Những người đóng góp mã nguồn
 
-<html>
-<ul style="list-style-type: none; padding: 0; margin: 0;">
-    <li style="display: inline-block; margin-right: 10px;">
-        <a href="https://github.com/theanishtar"><img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="Image 1" style="border-radius: 50%; width: 30px; height: 30px;"></a>
-    </li>
-    <!-- Add more images as needed -->
-</ul>
 
-<style>
+<div style="padding: 0; margin: 0; ">
+    <div style=" display: inline-block; margin-right: 10px;">
+        <a href="https://github.com/theanishtar">
+          <img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="" style=" display: block; borderRadius: 50%;  border-radius: 50%; width: 30px; height: 30px;">
+        </a>
+<!--     <img src="https://avatars.githubusercontent.com/u/89396036?v=4" alt="" style="width: 30px;height: 30px;max-width: 100%;border-radius: 50%;"> -->
+    </div>
+    <!-- Add more images as needed -->
+</div>
+
+<!-- <style>
   li a img{
     border-radius: 50%; 
   }
-</style>
+</style> -->
 
 <a href="./CONTRIBUTING.md">Xem chi tiết</a>
-</html>
+
