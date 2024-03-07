@@ -8,7 +8,7 @@ Vetonary APIs cung cấp các công cụ mạnh mẽ cho các nhà phát triển
   <a href=""><img src="https://img.shields.io/github/last-commit/theanishtar/vetonary" alt="GitHub last commit"></a>
   <a href=""><img src="https://img.shields.io/github/forks/theanishtar/vetonary" alt="GitHub forks"></a>
   <a href=""><img src="https://img.shields.io/github/stars/theanishtar/vetonary" alt="GitHub Repo stars"></a>
-  <a href=""><img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
+  <a href="https://discord.com/invite/mCnF9EqV"><img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true" alt="Chat"></a>
 </p>
 
 ---
