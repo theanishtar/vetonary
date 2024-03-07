@@ -13,6 +13,8 @@ Vetonary APIs cung cấp các công cụ mạnh mẽ cho các nhà phát triển
 
 ---
 
+Truy cập vào trang website chính thức của chúng tôi tại [https://vetonary.web.app/](https://vetonary.web.app/) hoặc [https://vetonary.vercel.app/](https://vetonary.vercel.app/) để sử dụng miễn phí các APIs
+
 ## Phụ lục
 
 - [Mô tả về Server](./README-API.md)
