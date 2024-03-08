@@ -10,7 +10,7 @@
     "bootstrap": "^5.3.3",
     "feather-icons": "^4.29.1",
     "firebase": "^10.8.1",
-    "jquery": "^3.7.1",
+    "jquery": "^3.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
