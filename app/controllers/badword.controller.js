@@ -381,6 +381,26 @@ exports.getAllBadwordFromDB = async (req, res) => {
   }
 };
 
+exports.updateAllBadwordFromDB = async (req, res) => {
+  try {
+    const badwords = await Badword.find();
+
+    // Bước 2: Duyệt qua danh sách từ cấm và cập nhật trường mà bạn muốn chỉnh sửa
+    await Promise.all(badwords.map(async (badword) => {
+      // Thực hiện cập nhật trường ở đây, ví dụ: badword.isDeleted = false;
+      // Lưu ý: Đảm bảo bạn cập nhật trường mà bạn muốn và thực hiện lưu lại vào cơ sở dữ liệu
+      badword.deleted = false;
+      await badword.save();
+    }));
+
+    return res.status(200).json({
+      badwords
+    });
+
+  } catch (error) {
+    return res.status(500).json({ error: "Error" });
+  }
+};
 //api/db?name=cút
 exports.getBadwordFromDbByName = async (req, res) => {
   const name = req.query.name;
