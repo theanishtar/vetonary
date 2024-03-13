@@ -394,6 +394,13 @@ exports.getBadwordFromDbByName = async (req, res) => {
         message: "Word not found"
       });
 
+    if (badwords[0].deleted == true)
+      return res.status(404).json({
+        badWords: badwords,
+        label: badwords.length,
+        message: "Word not found"
+      });
+
     return res.status(200).json({
       badwords: badwords,
       label: badwords.length,
@@ -480,7 +487,7 @@ exports.deleteBadwordInDbByName = async (req, res) => {
         message: "Word not found"
       });
 
-    if (badwords[0].deleted == true) {
+    if (badwords[0].deleted == true)
       return res.status(200).json({
         badwords: badwords[0],
         status: -1,
@@ -488,7 +495,6 @@ exports.deleteBadwordInDbByName = async (req, res) => {
         action: "Failed",
         message: "The word has been deleted from the database. Would you like to restore it?"
       });
-    }
 
     // const deleteBadword = await Badword.deleteOne({ _id: badwords[0]._id });
     const deleteBadword = await Badword.updateOne({ _id: badwords[0]._id }, { $set: { deleted: true } });
