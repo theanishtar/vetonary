@@ -16,6 +16,9 @@ const badwordSchema = new mongoose.Schema({
   },
   severityLevel: {
     type: Number
+  },
+  deleted: {
+    type: Boolean
   }
 });
 
