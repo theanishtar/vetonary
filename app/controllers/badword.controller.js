@@ -381,26 +381,6 @@ exports.getAllBadwordFromDB = async (req, res) => {
   }
 };
 
-exports.updateAllBadwordFromDB = async (req, res) => {
-  try {
-    const badwords = await Badword.find();
-
-    // Bước 2: Duyệt qua danh sách từ cấm và cập nhật trường mà bạn muốn chỉnh sửa
-    await Promise.all(badwords.map(async (badword) => {
-      // Thực hiện cập nhật trường ở đây, ví dụ: badword.isDeleted = false;
-      // Lưu ý: Đảm bảo bạn cập nhật trường mà bạn muốn và thực hiện lưu lại vào cơ sở dữ liệu
-      badword.deleted = false;
-      await badword.save();
-    }));
-
-    return res.status(200).json({
-      badwords
-    });
-
-  } catch (error) {
-    return res.status(500).json({ error: "Error" });
-  }
-};
 //api/db?name=cút
 exports.getBadwordFromDbByName = async (req, res) => {
   const name = req.query.name;
@@ -500,9 +480,21 @@ exports.deleteBadwordInDbByName = async (req, res) => {
         message: "Word not found"
       });
 
-    const deleteBadword = await Badword.deleteOne({ _id: badwords[0]._id });
+    if (badwords[0].deleted == true) {
+      return res.status(200).json({
+        badwords: badwords[0],
+        status: -1,
+        change: 0,
+        action: "Failed",
+        message: "The word has been deleted from the database. Would you like to restore it?"
+      });
+    }
+
+    // const deleteBadword = await Badword.deleteOne({ _id: badwords[0]._id });
+    const deleteBadword = await Badword.updateOne({ _id: badwords[0]._id }, { $set: { deleted: true } });
+    badwords[0].deleted = true;
     return res.status(200).json({
-      badwords: badwords,
+      badwords: badwords[0],
       status: 1 ? deleteBadword.acknowledged : 0,
       change: deleteBadword.deletedCount,
       action: "Successfully",
