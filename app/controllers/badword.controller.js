@@ -422,6 +422,14 @@ exports.postBadwordToDB = async (req, res) => {
         action: "Failed",
         message: "Word is same from database, please post new data"
       });
+    if (badwords[0].deleted == true)
+      return res.status(201).json({
+        badwords: badwords,
+        status: 0,
+        action: "Failed",
+        message: "The word has been deleted from the database. Would you like to restore it?"
+      });
+
     const badword = {
       name: name,
       label: label || 1,
