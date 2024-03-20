@@ -9,11 +9,11 @@ const { mongoose } = require("./app/models");
 const config = require('./app/config/index');
 
 //---------- CONFIG SERVER  ---------------------
+// set port, listen for requests
+const PORT = config.serverConfig.PORT || 5152;
 const redisURI = config.dbConfig.REDIS_URI;
 const mongodbURI = config.dbConfig.MONGO_URI;
 const prefix = config.dbConfig.PREFIX_CACHE;
-// set port, listen for requests
-const PORT = config.serverConfig.PORT || 5152;
 /*----------------------------------------------*/
 
 const app = express();
@@ -24,13 +24,6 @@ app.use(cors());
 app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cookieSession({
-    name: "davis-app-session",
-    keys: ["COOKIE_SECRET"], // should use as secret environment variable
-    httpOnly: true
-  })
-);
 
 /**--------------------- DB CONNECTIONS -------------------------*/
 
