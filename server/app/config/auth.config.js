@@ -1,3 +1,7 @@
+var dotent = require('dotenv');
+
+const secretJwt = process.env.SECRET_JWT;
+
 module.exports = {
-  secret: "Theanishtar-badword-detector"
+  SECRET_JWT: secretJwt,
 };
