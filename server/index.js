@@ -9,14 +9,6 @@ const { mongoose } = require("./app/models");
 const config = require('./app/config/index');
 var dotent = require('dotenv');
 
-//---------- CONFIG SERVER  ---------------------
-// set port, listen for requests
-const PORT = config.serverConfig.PORT || 5152;
-const redisURI = config.dbConfig.REDIS_URI;
-const mongodbURI = config.dbConfig.MONGO_URI;
-const prefix = config.dbConfig.PREFIX_CACHE;
-/*----------------------------------------------*/
-
 const app = express();
 const server = http.createServer(app); // Tạo server từ express app
 
@@ -26,6 +18,14 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+//---------- CONFIG SERVER  ---------------------
+// set port, listen for requests
+const PORT = process.env.PORT || 5152;
+const redisURI = process.env.REDIS_URI;
+const mongodbURI = process.env.MONGODB_URI;
+const prefix = process.env.PREFIX;
+/*----------------------------------------------*/
+console.log(mongodbURI)
 /**--------------------- DB CONNECTIONS -------------------------*/
 
 const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
