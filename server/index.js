@@ -7,6 +7,7 @@ const Redis = require("ioredis");
 const db = require("./app/models");
 const { mongoose } = require("./app/models");
 const config = require('./app/config/index');
+var dotent = require('dotenv');
 
 //---------- CONFIG SERVER  ---------------------
 // set port, listen for requests

@@ -153,6 +153,47 @@ exports.postCache = async (req, res, redis, prefix) => {
   }
 }
 
+
+exports.deleteCaches = async (req, res, redis, prefix) => {
+  const key = prefix + req.query.key;
+  try {
+    // Xóa tất cả từ Redis
+    // Flush all caches
+    // Get number of keys before flush
+    let keysBeforeFlush;
+
+    redis.dbsize()
+      .then(count => {
+        keysBeforeFlush = count;
+        console.log('Number of keys before flush:', keysBeforeFlush);
+        // Flush all caches
+        // return res.json({ action: `del cache with key is ${key}`, status: "Sucess", data: result });
+        return redis.flushall();
+      })
+      .then(() => {
+        console.log('All caches have been deleted successfully.');
+        // Get number of keys after flush
+        return redis.dbsize();
+      })
+      .then(keysAfterFlush => {
+        const keysDeleted = keysBeforeFlush - keysAfterFlush;
+        console.log('Number of caches deleted:', keysDeleted);
+        return res.json({ action: `del caches`, status: "Sucess", data: keysDeleted });
+      })
+      .catch((err) => {
+        console.error('Error:', err);
+        return res.json({ action: `del caches`, status: "Faild", data: 0 });
+      })
+      .finally(() => {
+        // Close the Redis connection
+        // redis.quit();
+      });
+  } catch (error) {
+    res.json(err)
+  }
+}
+
+
 exports.deleteByKey = async (req, res, redis, prefix) => {
   const key = prefix + req.query.key;
   try {
