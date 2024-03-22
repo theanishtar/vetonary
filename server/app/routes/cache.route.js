@@ -12,7 +12,7 @@ module.exports = function (app, redis, prefix) {
   });
 
   app.get('/api/cache/top', (req, res) => cache.getTop100(req, res, redis, prefix));
-  app.get('/api/caches', (req, res) => cache.getAllCache(req, res, redis, prefix));
+  app.get('/api/caches', auth.isModerator, (req, res) => cache.getAllCache(req, res, redis, prefix));
   app.get('/api/caches/pattern', (req, res) => cache.getCachesPater(req, res, redis, prefix));
   app.get('/api/cache/missingRedis', auth.isModerator, (req, res) => cache.missingRedis(req, res, redis, prefix));
   app.get('/api/cache/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis, prefix));
