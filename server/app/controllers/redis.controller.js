@@ -279,12 +279,13 @@ exports.getCacheByKey = async (req, res, redis, prefix) => {
   }
 };
 
-exports.addAllMongoToRedis = async (eq, res, redis, prefix) => {
+exports.addAllMongoToRedis = async (req, res, redis, prefix) => {
   const badwords = await Badword.find();
   let len = 0;
   badwords.forEach(e => {
     len++;
-    redis.set(prefix + e.name, JSON.stringify(e))
+    const bw = JSON.stringify(e);
+    redis.set(prefix + e.name, bw)
       .then(() => {
         console.log('Dữ liệu đã được thêm vào Redis thành công.', e);
       })
