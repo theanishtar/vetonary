@@ -27,10 +27,14 @@ const prefix = process.env.PREFIX;
 /*----------------------------------------------*/
 console.log(mongodbURI)
 /**--------------------- DB CONNECTIONS -------------------------*/
-
+const connectionStatus = {
+  redis: false,
+  mongoDB: false
+}
 const redis = new Redis(redisURI); // Khởi tạo một đối tượng Redis
 // Kiểm tra trạng thái kết nối
 redis.on("connect", function () {
+  connectionStatus.redis = true;
   console.log("Connected to Redis successfully!");
 });
 // Xử lý lỗi kết nối
@@ -44,6 +48,7 @@ db.mongoose
     useUnifiedTopology: true
   })
   .then(() => {
+    connectionStatus.mongoDB = true;
     console.log("Successfully connect to MongoDB." + mongodbURI);
   })
   .catch(err => {
