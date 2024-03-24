@@ -19,6 +19,7 @@ Truy cập vào trang website chính thức của chúng tôi tại [https://vet
 
 ## Phụ lục
 
+- [Đôi nét về dự án](https://www.facebook.com/groups/devoiminhdidauthe/permalink/24628197220157317/?mibextid=oFDknk)
 - [Mô tả về Server](./README-API.md)
 - [Đóng góp](./CONTRIBUTING.md)
 - [Danh sách APIs](./APIs.md)
