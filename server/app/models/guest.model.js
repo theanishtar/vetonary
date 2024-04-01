@@ -10,6 +10,12 @@ const guestSchema = new mongoose.Schema({
   badword: {
     type: String
   },
+  mail: {
+    type: String
+  },
+  email: {
+    type: String
+  },
 });
 
 

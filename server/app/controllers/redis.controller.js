@@ -264,6 +264,7 @@ exports.updateByKey = async (req, res, redis, prefix) => {
 
 exports.getCacheByKey = async (req, res, redis, prefix) => {
   const key = prefix + req.query.key;
+  console.log(key)
   try {
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(key);

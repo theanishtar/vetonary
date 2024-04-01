@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const http = require('http'); // Import module http
 const Redis = require("ioredis");
 const db = require("./app/models");
-const { mongoose } = require("./app/models");
 const config = require('./app/config/index');
 var dotent = require('dotenv');
 
@@ -25,7 +24,6 @@ const redisURI = process.env.REDIS_URI;
 const mongodbURI = process.env.MONGODB_URI;
 const prefix = process.env.PREFIX;
 /*----------------------------------------------*/
-console.log(mongodbURI)
 /**--------------------- DB CONNECTIONS -------------------------*/
 const connectionStatus = {
   redis: false,
