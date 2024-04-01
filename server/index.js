@@ -66,7 +66,6 @@ require("./app/routes/cache.route")(app, redis, prefix);
 require("./app/routes/auth.route")(app);
 require("./app/routes/db.route")(app);
 require("./app/routes/contribute.route")(app);
-require("./app/routes/guest.route")(app);
 
 
 //Thay vì sử dụng app.listen, sử dụng server.listen để sử dụng cùng một cổng cho cả express app và Socket.IO:
