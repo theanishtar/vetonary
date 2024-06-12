@@ -7,9 +7,17 @@ const Redis = require("ioredis");
 const db = require("./app/models");
 const config = require('./app/config/index');
 var dotent = require('dotenv');
+const fs = require('fs');
+
+
+// Đọc tệp chứng chỉ và khóa
+const options = {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.cert')
+};
 
 const app = express();
-const server = http.createServer(app); // Tạo server từ express app
+const server = http.createServer(options, app); // Tạo server từ express app
 
 dotent.config();
 app.use(cors());
@@ -69,6 +77,6 @@ require("./app/routes/contribute.route")(app);
 
 
 //Thay vì sử dụng app.listen, sử dụng server.listen để sử dụng cùng một cổng cho cả express app và Socket.IO:
-server.listen(PORT, () => {
-  console.log(`Server is running on: http://localhost:${PORT}.`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on: http://localhost:${PORT}. - wwith cert: ${options.cert}`);
 });
