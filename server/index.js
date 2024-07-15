@@ -12,12 +12,12 @@ const fs = require('fs');
 
 // Đọc tệp chứng chỉ và khóa
 const options = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.cert')
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
 };
 
 const app = express();
-const server = http.createServer(options, app); // Tạo server từ express app
+const server = http.createServer(app); // Tạo server từ express app
 
 dotent.config();
 app.use(cors());
@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
     connection: connectionStatus
   });
 });
-require("./app/routes/badword.route")(app, redis);
+require("./app/routes/badword.route")(app, redis, prefix);
 require("./app/routes/cache.route")(app, redis, prefix);
 require("./app/routes/auth.route")(app);
 require("./app/routes/db.route")(app);
@@ -78,5 +78,5 @@ require("./app/routes/contribute.route")(app);
 
 //Thay vì sử dụng app.listen, sử dụng server.listen để sử dụng cùng một cổng cho cả express app và Socket.IO:
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on: http://localhost:${PORT}. - wwith cert: ${options.cert}`);
+  console.log(`Server is running on: http://localhost:${PORT}`);
 });

@@ -22,7 +22,7 @@ exports.signin = async (req, res) => {
           user: {
             fullname: user?.fullname,
             username: user?.username,
-            token: jwt.sign({ username: user?.username, role: user?.role }, config.secret, {
+            token: jwt.sign({ username: user?.username, role: user?.role }, secretJwt, {
               expiresIn: "1d",
             }),
           },
@@ -32,6 +32,7 @@ exports.signin = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: error?.message || error,
     });

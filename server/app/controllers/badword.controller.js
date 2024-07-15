@@ -173,14 +173,16 @@ exports.checkBadword = async (req, res, redis) => {
 };
 
 
-exports.cleanWords = async (req, res, redis) => {
-  const line = req.body.words || req.query.word;
+exports.cleanWords = async (req, res, redis, prefix) => {
+  const line = prefix + req.query.word;
+  console.log(line)
   let hasBadword; // Cờ để kiểm tra xem có badword không
   let badwords = [];
   try {
     // Cả chuỗi đều là badwords
     const findCache = await redis.get(line);
     const resCache = JSON.parse(findCache);
+    console.log(resCache)
     if (findCache) {
       badwords.push(resCache);
       let cleanWords = '*'.repeat(resCache.name.length);
@@ -213,7 +215,7 @@ exports.cleanWords = async (req, res, redis) => {
     });
     data.forEach(e => {
       if (line.includes(e.key)) {
-        checkContains = e.value;
+        checkContains = e.value.name;
         badwords.push(checkContains);
         return;
       }
