@@ -153,6 +153,47 @@ exports.postCache = async (req, res, redis, prefix) => {
   }
 }
 
+
+exports.deleteCaches = async (req, res, redis, prefix) => {
+  const key = prefix + req.query.key;
+  try {
+    // Xóa tất cả từ Redis
+    // Flush all caches
+    // Get number of keys before flush
+    let keysBeforeFlush;
+
+    redis.dbsize()
+      .then(count => {
+        keysBeforeFlush = count;
+        console.log('Number of keys before flush:', keysBeforeFlush);
+        // Flush all caches
+        // return res.json({ action: `del cache with key is ${key}`, status: "Sucess", data: result });
+        return redis.flushall();
+      })
+      .then(() => {
+        console.log('All caches have been deleted successfully.');
+        // Get number of keys after flush
+        return redis.dbsize();
+      })
+      .then(keysAfterFlush => {
+        const keysDeleted = keysBeforeFlush - keysAfterFlush;
+        console.log('Number of caches deleted:', keysDeleted);
+        return res.json({ action: `del caches`, status: "Sucess", data: keysDeleted });
+      })
+      .catch((err) => {
+        console.error('Error:', err);
+        return res.json({ action: `del caches`, status: "Faild", data: 0 });
+      })
+      .finally(() => {
+        // Close the Redis connection
+        // redis.quit();
+      });
+  } catch (error) {
+    res.json(err)
+  }
+}
+
+
 exports.deleteByKey = async (req, res, redis, prefix) => {
   const key = prefix + req.query.key;
   try {
@@ -238,12 +279,13 @@ exports.getCacheByKey = async (req, res, redis, prefix) => {
   }
 };
 
-exports.addAllMongoToRedis = async (eq, res, redis, prefix) => {
+exports.addAllMongoToRedis = async (req, res, redis, prefix) => {
   const badwords = await Badword.find();
   let len = 0;
   badwords.forEach(e => {
     len++;
-    redis.set(prefix + e.name, JSON.stringify(e))
+    const bw = JSON.stringify(e);
+    redis.set(prefix + e.name, bw)
       .then(() => {
         console.log('Dữ liệu đã được thêm vào Redis thành công.', e);
       })

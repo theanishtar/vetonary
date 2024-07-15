@@ -1,4 +1,11 @@
+var dotent = require('dotenv');
+
+const redisURI = process.env.REDIS_URI;
+const mongodbURI = process.env.MONGODB_URI;
+const prefix = process.env.PREFIX;
+
 module.exports = {
-  HOST: "cluster0.5xjl6sd.mongodb.net",
-  DB: "moderator"
+  MONGO_URI: mongodbURI,
+  REDIS_URI: redisURI,
+  PREFIX_CACHE: prefix
 };

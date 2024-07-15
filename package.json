@@ -4,7 +4,8 @@
   "description": "Recommender System",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "node --watch index.js"
   },
   "keywords": [
     "node.js",

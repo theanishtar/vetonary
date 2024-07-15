@@ -7,15 +7,21 @@ exports.getAll = async (req, res) => {
 };
 
 exports.save = async (req, res) => {
-  const { name, label, severityLevel } = req.body;
+  const { name, label, severityLevel, contributor } = req.body;
+  const { fullname, mess } = contributor;
 
-  const badword = {
-    name: name,
+  const contribute = {
+    name: name || "nonameyet",
     label: label || 1,
     severityLevel: severityLevel || 1,
-    createDate: new Date()
-  }
-  const newContribute = new Contribute(badword);
+    createDate: new Date(),
+    contributor: {
+      fullname: "Trần Hữu Đang",
+      mess: "Lời nhắn 1"
+    }
+  };
+
+  const newContribute = new Contribute(contribute);
   const saveContribute = newContribute.save();
   return res.status(200).json({
     badword: newContribute,

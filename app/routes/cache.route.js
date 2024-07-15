@@ -18,6 +18,7 @@ module.exports = function (app, redis, prefix) {
   app.get('/api/cache/missingMongo', auth.isModerator, (req, res) => cache.missingMongo(req, res, redis, prefix));
   app.post('/api/caches', auth.isModerator, (req, res) => cache.addAllMongoToRedis(req, res, redis, prefix));
   app.get('/api/cache', (req, res) => cache.getCacheByKey(req, res, redis, prefix)); //api/cache?key=cút
+  app.delete('/api/caches', auth.isModerator, (req, res) => cache.deleteCaches(req, res, redis, prefix)); //api/cache?key=cút
   app.delete('/api/cache', auth.isModerator, (req, res) => cache.deleteByKey(req, res, redis, prefix)); //api/cache?key=cút
   app.put('/api/cache', auth.isModerator, (req, res) => cache.updateByKey(req, res, redis, prefix)); //api/cache?key=cút
   app.post('/api/cache', auth.isModerator, (req, res) => cache.postCache(req, res, redis, prefix)); //api/cache

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const User = require('./user.model');
+const Badword = require('./badword.model');
 
 const contributeSchema = new mongoose.Schema({
   _id: {
@@ -16,7 +18,14 @@ const contributeSchema = new mongoose.Schema({
   },
   severityLevel: {
     type: Number
-  }
+  },
+  contributor: {
+    type: Object,
+  },
+  // badword: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Badword'
+  // },
 });
 
 
