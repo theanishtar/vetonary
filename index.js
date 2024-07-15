@@ -9,13 +9,6 @@ const config = require('./app/config/index');
 var dotent = require('dotenv');
 const fs = require('fs');
 
-
-// Đọc tệp chứng chỉ và khóa
-const options = {
-  key: fs.readFileSync('./server.key'),
-  cert: fs.readFileSync('./server.cert')
-};
-
 const app = express();
 const server = http.createServer(app); // Tạo server từ express app
 
