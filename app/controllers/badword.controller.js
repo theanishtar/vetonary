@@ -28,9 +28,9 @@ exports.getAllBadwords = async (req, res, redis) => {
   }
 };
 
-exports.getBadwordByName = async (req, res, redis) => {
+exports.getBadwordByName = async (req, res, redis, prefix) => {
   try {
-    const name = req.query.name;
+    const name = prefix + req.query.name;
     // Kiểm tra xem dữ liệu có trong cache không
     const findCache = await redis.get(name);
     if (findCache)
@@ -55,8 +55,8 @@ exports.getBadwordByName = async (req, res, redis) => {
       data.push({ key: key, value: JSON.parse(value) });
     });
     data.forEach(e => {
-      if (name.includes(e.key)) {
-        checkContains = e.value;
+      if (name.includes(e.key.substring(5))) {
+        checkContains = e.value.name;
         return;
       }
     })
@@ -213,10 +213,10 @@ exports.cleanWords = async (req, res, redis, prefix) => {
       data.push({ key: key, value: JSON.parse(value) });
     });
     data.forEach(e => {
-      if (line.includes(e.key)) {
+      if (line.includes(e.key.substring(5))) {
         checkContains = e.value.name;
         badwords.push(checkContains);
-        return;
+        // return;
       }
     })
     if (checkContains) {
@@ -297,6 +297,7 @@ exports.getCleanWords = async (req, res, redis) => {
     });
     const results = await Promise.all(cache);
 
+    console.log(results)
     results.forEach(e => {
       if (e.bad != null) {
         hasBadword = JSON.parse(e.bad);
@@ -350,7 +351,7 @@ exports.getCleanWords = async (req, res, redis) => {
     return res.status(404).json({ badWords: badwords, label: 0, message: "Word not found" });
   } catch (error) {
     console.log(error)
-    return res.status(500).json({ error: "ERR" });
+    return res.status(500).json({ error: "ERR", mesage: error });
   }
 };
 
