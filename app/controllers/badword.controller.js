@@ -182,7 +182,6 @@ exports.cleanWords = async (req, res, redis, prefix) => {
     // Cả chuỗi đều là badwords
     const findCache = await redis.get(line);
     const resCache = JSON.parse(findCache);
-    console.log(resCache)
     if (findCache) {
       badwords.push(resCache);
       let cleanWords = '*'.repeat(resCache.name.length);
