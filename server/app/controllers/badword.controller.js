@@ -182,7 +182,6 @@ exports.cleanWords = async (req, res, redis, prefix) => {
     // Cả chuỗi đều là badwords
     const findCache = await redis.get(line);
     const resCache = JSON.parse(findCache);
-    console.log(resCache)
     if (findCache) {
       badwords.push(resCache);
       let cleanWords = '*'.repeat(resCache.name.length);
@@ -221,7 +220,7 @@ exports.cleanWords = async (req, res, redis, prefix) => {
       }
     })
     if (checkContains) {
-      cleanWords = cleanWordsInLine(line, badwords);
+      cleanWords = cleanWordsInLine(line.substring(5), badwords);
       return res.status(200).json(
         {
           badWords: badwords,
@@ -357,12 +356,14 @@ exports.getCleanWords = async (req, res, redis) => {
 
 
 function cleanWordsInLine(s, badwords) {
+  console.log("line: " + s);
+  console.log(badwords)
   badwords.forEach((e, i) => {
-    let find = s.indexOf(badwords[i].name);
+    let find = s.indexOf(badwords[i]);
     while (find >= 0) {
       let sFirts = s.substring(0, find);
-      let beep = '*'.repeat(badwords[i].name.length)
-      let sLast = s.substring(find + badwords[i].name.length);
+      let beep = '*'.repeat(badwords[i].length)
+      let sLast = s.substring(find + badwords[i].length);
       s = `${sFirts}${beep}${sLast} `;
       find = s.indexOf(badwords[i], find + beep.length);
     }
