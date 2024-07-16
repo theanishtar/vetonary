@@ -8,24 +8,44 @@ const contributeSchema = new mongoose.Schema({
     default: mongoose.Types.ObjectId, // Đảm bảo sử dụng một giá trị mặc định
   },
   createDate: {
-    type: Date
+    type: Date,
+    default: new Date()
   },
-  label: {
-    type: Number
-  },
-  name: {
+  author: {
     type: String
   },
-  severityLevel: {
-    type: Number
+  message: {
+    type: String
   },
-  contributor: {
-    type: Object,
+  word: {
+    type: String
   },
-  // badword: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Badword'
-  // },
+  added: {
+    type: Boolean,
+    default: false
+  },
+  badword: {
+    createDate: {
+      type: Date,
+      default: new Date()
+    },
+    name: {
+      type: String,
+      default: this.word
+    },
+    label: {
+      type: Number,
+      default: 1
+    },
+    severityLevel: {
+      type: Number,
+      default: 1
+    },
+    deleted: {
+      type: Boolean,
+      default: false
+    }
+  },
 });
 
 
