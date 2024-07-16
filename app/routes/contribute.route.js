@@ -11,4 +11,6 @@ module.exports = function (app) {
 
   app.get("/api/contributes", controller.getAll);
   app.post("/api/contribute", controller.save);
+  app.post("/api/contribute/badword", controller.contributeBadword);
+  app.get("/api/contribute/push", controller.addContributeToDB); //un=dangth&tk=
 };
