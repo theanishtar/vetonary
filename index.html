@@ -103,7 +103,7 @@
     }
 
     function callSyncAPI(un, tk) {
-      var url = `http://localhost:8080/api/contribute/push?un=${encodeURIComponent(un)}&tk=${encodeURIComponent(tk)}`;
+      var url = `https://vetonary.vercel.app/api/contribute/push?un=${encodeURIComponent(un)}&tk=${encodeURIComponent(tk)}`;
 
       fetch(url)
         .then(response => response.json())
