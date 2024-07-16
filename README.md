@@ -21,7 +21,7 @@ Truy cập vào trang website chính thức của chúng tôi tại [https://vet
 
 - [Đôi nét về dự án](https://www.facebook.com/groups/devoiminhdidauthe/permalink/24628197220157317/?mibextid=oFDknk)
 - [Mô tả về Server](./README-API.md)
-- [Đóng góp](./CONTRIBUTING.md)
+- [Đóng góp từ ngữ cho chúng tôi tại](https://theanishtar.github.io/vetonary/)
 - [Danh sách APIs](./APIs.md)
 
 ---
