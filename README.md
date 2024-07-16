@@ -28,7 +28,7 @@ Truy cập vào trang website chính thức của chúng tôi tại [https://vet
 
 Việc kiểm tra các từ ngữ là rất quan trọng với những dự án cộng đồng như mạng xã hội hay diễn đàn
 
-Bạn cũng có thể cung cấp thêm từ ngữ thô tục cho chúng tôi tại [đây](). Rất cảm ơn !
+Bạn cũng có thể cung cấp thêm từ ngữ thô tục cho chúng tôi tại [đây](https://theanishtar.github.io/vetonary/). Rất cảm ơn !
 
 <img width="400px" src="./images/81c6bf9dd803755d2c12.jpg"></img>
 
