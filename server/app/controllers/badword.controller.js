@@ -175,8 +175,6 @@ exports.checkBadword = async (req, res, redis) => {
 
 exports.cleanWords = async (req, res, redis, prefix) => {
   const line = prefix + req.query.word;
-  console.log(line)
-  let hasBadword; // Cờ để kiểm tra xem có badword không
   let badwords = [];
   try {
     // Cả chuỗi đều là badwords
@@ -219,7 +217,8 @@ exports.cleanWords = async (req, res, redis, prefix) => {
         // return;
       }
     })
-    if (checkContains) {
+
+    if (badwords.length > 0) {
       cleanWords = cleanWordsInLine(line.substring(5), badwords);
       return res.status(200).json(
         {
@@ -229,43 +228,10 @@ exports.cleanWords = async (req, res, redis, prefix) => {
           message: "This is VN badword"
         });
     }
-    const name = line;
-    const badw = await Badword.find({ name });
-    console.log(badw.length > 0 && badw)
-    if (badw && badw.length > 0) {
-      badwords.push(badw);
-    }
-    const db = word.map(async (nameW) => {
-      const bad = await Badword.find({ name: nameW });
-      return { nameW, bad };
-    });
-    const dbResults = await Promise.all(db);
-    dbResults.forEach(e => {
-      if (e.bad.length > 0) {
-        hasBadword = e.bad;
-        return;
-      }
-    });
 
-    if (hasBadword) {
-      badwords.push(hasBadword);
-    }
-
-    if (badwords.length > 0) {
-      const cleanWords = this.cleanWords(line, badwords);
-      return res.status(200).json(
-        {
-          badWords: badwords,
-          label: badwords.length,
-          cleanWord: cleanWords,
-          message: "This is VN badword"
-        });
-    }
-
-    return res.status(404).json({ badWords: badwords, label: 0, message: "Word not found" });
+    return res.status(404).json({ badWords: badwords, label: 0, message: "This is not badword" });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: "ERR" });
+    return res.status(500).json({ error: "ERR", exp: error });
   }
 };
 
@@ -297,7 +263,6 @@ exports.getCleanWords = async (req, res, redis) => {
     });
     const results = await Promise.all(cache);
 
-    console.log(results)
     results.forEach(e => {
       if (e.bad != null) {
         hasBadword = JSON.parse(e.bad);
