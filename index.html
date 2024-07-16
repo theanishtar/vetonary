@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call API Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .result {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Đóng góp từ ngữ</h2>
+
+  <form id="apiForm">
+    <label for="author">Username:</label>
+    <input type="text" id="author" name="author" placeholder="Enter author...">
+    <label for="word">Word:</label>
+    <input type="text" id="word" name="word" placeholder="Enter word...">
+    <button type="submit">Submit</button>
+    <button type="button" id="syncButton">Sync</button>
+  </form>
+
+  <div class="result" id="apiResult">
+    <!-- API response will be displayed here -->
+  </div>
+
+  <script>
+    document.getElementById("apiForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      callBadWordAPI();
+    });
+
+    document.getElementById("syncButton").addEventListener("click", function () {
+      var author = document.getElementById("author").value;
+      var tk = prompt("Please enter your token (tk):");
+
+      if (tk) {
+        callSyncAPI(author, tk);
+      }
+    });
+
+    function callBadWordAPI() {
+      var formData = {
+        author: document.getElementById("author").value,
+        word: document.getElementById("word").value
+      };
+
+      fetch('https://vetonary.vercel.app/api/contribute/badword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          displayApiResponse(data);
+        })
+        .catch(error => {
+          displayApiError(error);
+        });
+    }
+
+    function callSyncAPI(un, tk) {
+      var url = `http://localhost:8080/api/contribute/push?un=${encodeURIComponent(un)}&tk=${encodeURIComponent(tk)}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          displayApiResponse(data);
+        })
+        .catch(error => {
+          displayApiError(error);
+        });
+    }
+
+    function displayApiResponse(data) {
+      var resultElement = document.getElementById("apiResult");
+      resultElement.innerHTML = `
+            <p><strong>API Response:</strong></p>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+    }
+
+    function displayApiError(error) {
+      var resultElement = document.getElementById("apiResult");
+      resultElement.innerHTML = `
+            <p><strong>Error:</strong> ${error}</p>
+        `;
+    }
+  </script>
+
+</body>
+
+</html>
